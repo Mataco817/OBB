@@ -1,0 +1,92 @@
+#set-info-modal .rpe-label,
+p {
+	text-align: center;
+}
+
+span.workout-descriptor.past-set,
+p, div.past-set > h3 {
+/* 	color: #9E9E9E; 500 */
+ 	color: #757575; /* 600 */
+/* 	color: #424242; 800 */
+}
+
+.workout-set-card {
+	width: 98%;
+	background-color: white;
+	display: block;
+}
+
+.workout-set-card .workout-descriptor {
+	font-weight: 600;
+	position: absolute;
+}
+
+.workout-set-card button.md-button,
+.workout-set-card button.md-button.set-info-btn {
+	margin-top: 26px;
+	margin-left: 0;
+}
+
+.workout-set-card button.md-button.set-info-btn {
+	text-align: start;
+	padding-left: 16px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	line-height: 2;
+}
+
+.workout-set-card button.md-button.set-info-btn.past-set {
+	
+}
+
+.workout-set-card .reps {
+	float: right;
+}
+
+.workout-set-card .reps > h3:not(:last-child) {
+	text-align: end;
+	margin-bottom: 0;
+}
+
+.workout-set-card md-card-content {
+	clear: both;
+}
+
+#set-info-modal {
+	background-color: white;
+/* 	height: 70%; */
+}
+
+#set-info-modal label, #set-info-modal .rpe-label {
+	font-weight: 500;
+}
+
+#set-info-modal div.md-dialog-content {
+	width: 100%;
+}
+
+#set-info-modal input {
+	border: 2px inset;
+}
+
+#set-info-modal .rpe-btn {
+	min-width: 36px;
+}
+
+#set-info-modal .rpe-btn > md-icon {
+	width: 18px;
+	height: 18px;
+}
+
+#set-info-modal div#RPE {
+	font-size: 80px;
+}
+
+#set-info-modal div#RPE.rpe-hue {
+ 	color: #757575; /* 600 */
+ 	opacity: 0.6;
+}
+
+#set-info-modal .submit-set-info-btn {
+	margin-top: 22px;
+}

@@ -1,0 +1,63 @@
+<md-content layout="column" layout-padding layout-fill>
+	<div ng-if="!settingsCtrl.deviceConnected">
+		<md-subheader class="md-no-sticky">Bluetooth &amp; Device Settings</md-subheader>
+		
+		<md-list-item>
+			<md-button flex
+				class="md-raised md-primary" 
+				ng-disabled="settingsCtrl.disableBTBtn" 
+				ng-click="settingsCtrl.enableBluetooth()">
+				{{ settingsCtrl.bluetoothBtnText }}
+			</md-button>
+		</md-list-item>
+		
+		<md-list-item ng-if="settingsCtrl.btEnabled">
+			<md-button flex
+				class="md-raised md-primary" 
+				ng-disabled="settingsCtrl.disableScanBtn" 
+				ng-click="settingsCtrl.scanDevices()">
+				{{ settingsCtrl.scanBtnText }}
+			</md-button>
+		</md-list-item>
+		
+		<md-list-item ng-if="!settingsCtrl.devicesFound() && settingsCtrl.scanning">
+			<md-progress-circular style="margin: auto;" md-mode="indeterminate"></md-progress-circular>
+		</md-list-item>
+	</div>
+	
+	<div ng-if="settingsCtrl.devicesFound() && !settingsCtrl.deviceConnected">
+		<md-subheader class="md-no-sticky">Discovered Devices</md-subheader>
+		
+		<md-list-item class="devices" ng-repeat="device in settingsCtrl.unpairedDevices" ng-click="settingsCtrl.pairDevice(device)">
+			<p class="meta-title">{{ device.name }}</p>
+			<p class="meta-data"><b>MAC Address</b>: {{ device.address }}</p>
+		</md-list-item>
+	</div>
+	
+	<div ng-if="settingsCtrl.deviceConnected">
+		<md-subheader class="md-no-sticky">Paired Device</md-subheader>
+		
+		<md-list-item class="paired-device">
+			<p>{{ settingsCtrl.deviceName() }}</p>
+			<p class="meta-data"><b>MAC Address</b>: {{ settingsCtrl.deviceAddress() }}</p>
+		</md-list-item>
+	</div>
+	
+	<md-divider></md-divider>
+	<md-subheader class="md-no-sticky">Generic Settings</md-subheader>
+
+	<md-list-item class="flex-none">
+		<md-input-container flex>
+			<label>Units</label>
+			<md-select ng-model="settingsCtrl.units" ng-change="settingsCtrl.set('units')">
+				<md-option value="Lbs">Pounds (Lbs)</md-option>
+				<md-option value="Kg">Kilograms (Kg)</md-option>
+			</md-select>
+		</md-input-container>
+	</md-list-item>
+	
+	<div id="paring-dialog" ng-if="settingsCtrl.pairing" layout="column" layout-align="center center">
+		<md-backdrop class="md-opaque"></md-backdrop>
+		<md-progress-circular class="md-accent" md-mode="{{settingsCtrl.pairing}}" md-diameter="96"></md-progress-circular>
+	</div>
+</md-content>
