@@ -60,14 +60,13 @@
 			if (settings[key]) {
 				settings[key] = value;
 				
+				var temp = key;
+				
 				db.get('userSettings')
 				.then(function(userSettings) {
-					return db.put({
-						_id : "userSettings",
-						_rev : userSettings._rev,
-						title : "User Settings",
-						"units" : value
-					})
+					userSettings[key] = value;
+					
+					return db.put(userSettings)
 					.then(function(response) {
 						console.log("Successfully updated user setting!");
 					})

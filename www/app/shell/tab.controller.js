@@ -27,11 +27,17 @@
 			$scope.$broadcast('syncSettings', {});
 		};
 
-		var unbindWatcher = $scope.$watch(function() { return $window.bluetoothSerial }, function(newValue, oldValue) {
-      if (newValue !== undefined) {
-			  $scope.$broadcast('checkConnectionStatus', {});
-			  unbindWatcher();
-      }
+		/*
+		 * Check status of bluetooth once plug-in is detected
+		 */
+		var unbindWatcher = $scope.$watch(function() { 
+			return $window.bluetoothSerial;
+		}, 
+		function(newValue, oldValue) {
+			if (newValue !== undefined) {
+				$scope.$broadcast('checkConnectionStatus', {});
+				unbindWatcher();
+			}
 		});
 	};
 })(angular);
