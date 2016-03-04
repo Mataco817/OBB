@@ -119,7 +119,7 @@
 					deferred.resolve("Connected to " + device.name + "!");
 					connectedDevice = device;
 					connected = true;
-					
+
 					/* Store MAC Address of connected device */
 					settingsService.setSetting("mac_address", device.address);
 

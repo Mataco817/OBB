@@ -1,9 +1,9 @@
 (function(angular){
-	angular.module('rfduino-service', [])
-	.service('rfduinoService', rfduinoService);
+	angular.module('bluetooth-service', [])
+	.service('bluetoothService', bluetoothService);
 
-	rfduinoService.$inject = ['$q', '$timeout', '$window', 'settingsService'];
-	function rfduinoService($q, $timeout, $window, settingsService) {
+	bluetoothService.$inject = ['$q', '$timeout', '$window', 'settingsService'];
+	function bluetoothService($q, $timeout, $window, settingsService) {
 		var connectedDevice = {};
 		var enabled = false;
 
@@ -27,8 +27,8 @@
 		function isEnabled() {
 			var deferred = $q.defer();
 
-			if ($window.rfduino && !enabled) {
-				rfduino.isEnabled(function() {
+			if ($window.bluetoothSerial && !enabled) {
+				bluetoothSerial.isEnabled(function() {
 					deferred.resolve("Bluetooth is enabled.");
 					enabled = true;
 				},
@@ -41,7 +41,7 @@
 				deferred.reslove("Bluetooth already enabled!");
 			}
 			else {
-				deferred.reject("rfduino plug-in not loaded.");
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -50,8 +50,8 @@
 		function isConnected() {
 			var deferred = $q.defer();
 
-			if ($window.rfduino && enabled) {
-				rfduino.isConnected(function() {
+			if ($window.bluetoothSerial && enabled) {
+				bluetoothSerial.isConnected(function() {
 					deferred.resolve("Device is connected.");
 				},
 				function() {
@@ -62,7 +62,7 @@
 				deferred.reject("Bluetooth is not enabled!");
 			}
 			else {
-				deferred.reject("rfduino plug-in not loaded.");
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -71,14 +71,14 @@
 		function enable() {
 			var deferred = $q.defer();
 
-			if ($window.rfduino) {
-				rfduino.list(function(devices) {
+			if ($window.bluetoothSerial) {
+				bluetoothSerial.list(function(devices) {
 					deferred.resolve("Bluetooth enabled!");
 					enabled = true;
 
 					for (var index = 0; index < devices.length; index++) {
 						if (devices[index].name === "OB 48") {
-							rfduino.connectInsecure(devices[index].address, function() {
+							bluetoothSerial.connectInsecure(devices[index].address, function() {
 								console.log("yyay");
 							}, function(reason) {
 								console.log("fail : " + reason);
@@ -94,7 +94,7 @@
 				deferred.reslove("Bluetooth already enabled!");
 			}
 			else {
-				deferred.reject("rfduino plug-in not loaded.");
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -103,8 +103,8 @@
 		function scanDevices() {
 			var deferred = $q.defer();
 
-			if ($window.rfduino && enabled) {
-				rfduino.discoverUnpaired(function(devices) {
+			if ($window.bluetoothSerial && enabled) {
+				bluetoothSerial.discoverUnpaired(function(devices) {
 					deferred.resolve(devices);
 				},
 				function() {
@@ -115,7 +115,7 @@
 				deferred.reject("Bluetooth is not enabled!");
 			}
 			else {
-				deferred.reject("rfduino plug-in not loaded.");
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -124,16 +124,16 @@
 		function connect(device) {
 			var deferred = $q.defer();
 
-			if ($window.rfduino && enabled) {
-				rfduino.connect(device.address, function() {
+			if ($window.bluetoothSerial && enabled) {
+				bluetoothSerial.connect(device.address, function() {
 					deferred.resolve("Connected to " + device.name + "!");
 					connectedDevice = device;
 					connected = true;
-
+					
 					/* Store MAC Address of connected device */
 					settingsService.setSetting("mac_address", device.address);
 
-					//rfduino.subscribe('\n', onReceive, onSubscribeFail);
+					//bluetoothSerial.subscribe('\n', onReceive, onSubscribeFail);
 				},
 				function(error) {
 					deferred.resolve("Failed to connected to " + device.name + "!");
@@ -145,7 +145,7 @@
 				deferred.reject("Bluetooth is not enabled!");
 			}
 			else {
-				deferred.reject("rfduino plug-in not loaded.");
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
