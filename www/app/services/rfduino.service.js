@@ -11,11 +11,12 @@
 			getConnectedDevice : getConnectedDevice,
 			isEnabled : isEnabled,
 			isConnected : isConnected,
-			enable : enable,
-			scanDevices : scanDevices,
+			discoverDevices : discoverDevices,
+			listDevices : listDevices,
 			connect : function(device) {
 				return connect(device);
-			}
+			},
+			disconnect : disconnect
 		};
 
 		return service;
@@ -41,7 +42,7 @@
 				deferred.reslove("Bluetooth already enabled!");
 			}
 			else {
-				deferred.reject("rfduino plug-in not loaded.");
+				deferred.reject("RFduino plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -52,10 +53,10 @@
 
 			if ($window.rfduino && enabled) {
 				rfduino.isConnected(function() {
-					deferred.resolve("Device is connected.");
+					deferred.resolve("OpenBarbell is connected.");
 				},
 				function() {
-					deferred.reject("Device is not connected.");
+					deferred.reject("OpenBarbell is not connected.");
 				});
 			}
 			else if (!enabled) {
@@ -68,43 +69,23 @@
 			return deferred.promise;
 		}
 
-		function enable() {
-			var deferred = $q.defer();
-
-			if ($window.rfduino) {
-				rfduino.list(function(devices) {
-					deferred.resolve("Bluetooth enabled!");
-					enabled = true;
-
-					for (var index = 0; index < devices.length; index++) {
-						if (devices[index].name === "OB 48") {
-							rfduino.connectInsecure(devices[index].address, function() {
-								console.log("yyay");
-							}, function(reason) {
-								console.log("fail : " + reason);
-							});
-						}
-					}
-				},
-				function() {
-					deferred.reject("Bluetooth was <b>not</b> enabled.");
-				});
-			}
-			else if (enabled) {
-				deferred.reslove("Bluetooth already enabled!");
-			}
-			else {
-				deferred.reject("rfduino plug-in not loaded.");
-			}
-
-			return deferred.promise;
-		}
-
-		function scanDevices() {
+		/**
+		 * Some REGEX for OpenBarbell Device detection "^(OB){1}\s{1}\d+$"
+		 * 
+		 * rfduino will call success callback each time a peripheral is discovered.
+		 * @sampleDevice {
+		 * 		"name": "RFduino",
+		 *		"uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
+		 *		"advertising": "echo",
+		 *		"rssi": -79
+		 * }
+		 */
+		function discoverDevices() {
 			var deferred = $q.defer();
 
 			if ($window.rfduino && enabled) {
-				rfduino.discoverUnpaired(function(devices) {
+				// cannot resolve on first device! Resolve when timer is done
+				rfduino.discover(3, function(device) {
 					deferred.resolve(devices);
 				},
 				function() {
@@ -125,10 +106,9 @@
 			var deferred = $q.defer();
 
 			if ($window.rfduino && enabled) {
-				rfduino.connect(device.address, function() {
+				rfduino.connect(device.uuid, function() {
 					deferred.resolve("Connected to " + device.name + "!");
 					connectedDevice = device;
-					connected = true;
 
 					/* Store MAC Address of connected device */
 					settingsService.setSetting("mac_address", device.address);
@@ -138,7 +118,6 @@
 				function(error) {
 					deferred.resolve("Failed to connected to " + device.name + "!");
 					connectedDevice = {};
-					connected = false;
 				});
 			}
 			else if (!enabled) {
