@@ -18,6 +18,12 @@
 		
 		vm.enterSetInfo = enterSetInformation;
 		
+		vm.doRefresh = function() {
+			console.log("Refreshing...");
+			// Stop the ion-refresher from spinning
+			$scope.$broadcast('scroll.refreshComplete');
+		};
+		
 		/*
 		 * Internal Methods
 		 */
@@ -61,13 +67,13 @@
 		function checkDeviceConnected() {
 //			vm.ready = false;
 			
-			bluetoothService.isConnected()
-			.then(function(response) {
-				vm.ready = true;
-			},
-			function(reason) {
-				console.log(reason);
-			});
+//			bluetoothService.isConnected()
+//			.then(function(response) {
+//				vm.ready = true;
+//			},
+//			function(reason) {
+//				console.log(reason);
+//			});
 		}
 		
 		function getUnits() {
