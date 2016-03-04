@@ -1,6 +1,10 @@
 (function(angular){
 	angular.module('bluetooth-service', [])
 	.service('bluetoothService', bluetoothService);
+	
+	/**************
+	 * DEPRECATED *
+	 **************/
 
 	bluetoothService.$inject = ['$q', '$timeout', '$window', 'settingsService'];
 	function bluetoothService($q, $timeout, $window, settingsService) {

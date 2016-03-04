@@ -2,86 +2,141 @@
 	angular.module('rfduino-service', [])
 	.service('rfduinoService', rfduinoService);
 
-	rfduinoService.$inject = ['bluetoothHelperService'];
-	function rfduinoService(bluetoothHelperService) {
-		// private final static String TAG = RFduinoService.class.getSimpleName();
-		var TAG = this.toString();
-		var ACTION_CONNECTED = "com.rfduino.ACTION_CONNECTED";
-		var ACTION_DISCONNECTED = "com.rfduino.ACTION_DISCONNECTED";
-		var ACTION_DATA_AVAILABLE = "com.rfduino.ACTION_DATA_AVAILABLE";
-		var EXTRA_DATA = "com.rfduino.EXTRA_DATA";
-		
-		var UUID_SERVICE = bluetoothHelperService.sixteenBitUuid(0x2220);
-		var UUID_RECEIVE = bluetoothHelperService.sixteenBitUuid(0x2221);
-		var UUID_SEND = bluetoothHelperService.sixteenBitUuid(0x2222);
-		var UUID_DISCONNECT = bluetoothHelperService.sixteenBitUuid(0x2223);
-		var UUID_CLIENT_CONFIGURATION = bluetoothHelperService.sixteenBitUuid(0x2902);
-		
-		var GattCallbacks = {
-			onConnectionStateChange : function(gatt, status, newState) {
-				if (newState == BluetoothProfile.STATE_CONNECTED) {
-	                Log.i(TAG, "Connected to RFduino.");
-	                Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
-	            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-	                Log.i(TAG, "Disconnected from RFduino.");
-	                broadcastUpdate(ACTION_DISCONNECTED);
-	            }
+	rfduinoService.$inject = ['$q', '$timeout', '$window', 'settingsService'];
+	function rfduinoService($q, $timeout, $window, settingsService) {
+		var connectedDevice = {};
+		var enabled = false;
+
+		var service = {
+			getConnectedDevice : getConnectedDevice,
+			isEnabled : isEnabled,
+			isConnected : isConnected,
+			discoverDevices : discoverDevices,
+			listDevices : listDevices,
+			connect : function(device) {
+				return connect(device);
 			},
-			onServicesDiscovered : function(gatt, status) {
-				if (status == BluetoothGatt.GATT_SUCCESS) {
-	                mBluetoothGattService = gatt.getService(UUID_SERVICE);
-	                
-	                if (mBluetoothGattService == null) {
-	                    Log.e(TAG, "RFduino GATT service not found!");
-	                    return;
-	                }
-
-	                BluetoothGattCharacteristic receiveCharacteristic = mBluetoothGattService.getCharacteristic(UUID_RECEIVE);
-	                if (receiveCharacteristic != null) {
-	                    BluetoothGattDescriptor receiveConfigDescriptor = receiveCharacteristic.getDescriptor(UUID_CLIENT_CONFIGURATION);
-	                    
-	                    if (receiveConfigDescriptor != null) {
-	                        gatt.setCharacteristicNotification(receiveCharacteristic, true);
-
-	                        receiveConfigDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-	                        gatt.writeDescriptor(receiveConfigDescriptor);
-	                    }
-	                    else {
-	                        Log.e(TAG, "RFduino receive config descriptor not found!");
-	                    }
-
-	                }
-	                else {
-	                    Log.e(TAG, "RFduino receive characteristic not found!");
-	                }
-
-	                broadcastUpdate(ACTION_CONNECTED);
-	            }
-				else {
-	                Log.w(TAG, "onServicesDiscovered received: " + status);
-	            }
-			},
-			onCharacteristicRead : function(gatt, characteristic, status) {
-				if (status == BluetoothGatt.GATT_SUCCESS) {
-	                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-	            }
-			},
-			onCharacteristicChanged : function(gatt, characteristic) {
-				broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-			}
+			disconnect : disconnect
 		};
-		
-		function broadcastUpdate(action) {
-			final Intent intent = new Intent(action);
-	        sendBroadcast(intent, Manifest.permission.BLUETOOTH);
+
+		return service;
+
+		function getConnectedDevice() {
+			return connectedDevice;
 		}
-		
-		function broadcastUpdate(action, characteristic) {
-			if (UUID_RECEIVE.equals(characteristic.getUuid())) {
-				final Intent intent = new Intent(action);
-				intent.putExtra(EXTRA_DATA, characteristic.getValue());
-				sendBroadcast(intent, Manifest.permission.BLUETOOTH);
+
+		function isEnabled() {
+			var deferred = $q.defer();
+
+			if ($window.rfduino && !enabled) {
+				rfduino.isEnabled(function() {
+					deferred.resolve("Bluetooth is enabled.");
+					enabled = true;
+				},
+				function() {
+					deferred.reject("Bluetooth is not enabled.");
+					enabled = false;
+				});
 			}
+			else if (enabled) {
+				deferred.reslove("Bluetooth already enabled!");
+			}
+			else {
+				deferred.reject("RFduino plug-in not loaded.");
+			}
+
+			return deferred.promise;
+		}
+
+		function isConnected() {
+			var deferred = $q.defer();
+
+			if ($window.rfduino && enabled) {
+				rfduino.isConnected(function() {
+					deferred.resolve("OpenBarbell is connected.");
+				},
+				function() {
+					deferred.reject("OpenBarbell is not connected.");
+				});
+			}
+			else if (!enabled) {
+				deferred.reject("Bluetooth is not enabled!");
+			}
+			else {
+				deferred.reject("rfduino plug-in not loaded.");
+			}
+
+			return deferred.promise;
+		}
+
+		/**
+		 * Some REGEX for OpenBarbell Device detection "^(OB){1}\s{1}\d+$"
+		 * 
+		 * rfduino will call success callback each time a peripheral is discovered.
+		 * @sampleDevice {
+		 * 		"name": "RFduino",
+		 *		"uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
+		 *		"advertising": "echo",
+		 *		"rssi": -79
+		 * }
+		 */
+		function discoverDevices() {
+			var deferred = $q.defer();
+
+			if ($window.rfduino && enabled) {
+				// cannot resolve on first device! Resolve when timer is done
+				rfduino.discover(3, function(device) {
+					deferred.resolve(devices);
+				},
+				function() {
+					deferred.reject("Could not find any devices.");
+				});
+			}
+			else if (!enabled) {
+				deferred.reject("Bluetooth is not enabled!");
+			}
+			else {
+				deferred.reject("rfduino plug-in not loaded.");
+			}
+
+			return deferred.promise;
+		}
+
+		function connect(device) {
+			var deferred = $q.defer();
+
+			if ($window.rfduino && enabled) {
+				rfduino.connect(device.uuid, function() {
+					deferred.resolve("Connected to " + device.name + "!");
+					connectedDevice = device;
+
+					/* Store MAC Address of connected device */
+					settingsService.setSetting("mac_address", device.address);
+
+					//rfduino.subscribe('\n', onReceive, onSubscribeFail);
+				},
+				function(error) {
+					deferred.resolve("Failed to connected to " + device.name + "!");
+					connectedDevice = {};
+				});
+			}
+			else if (!enabled) {
+				deferred.reject("Bluetooth is not enabled!");
+			}
+			else {
+				deferred.reject("rfduino plug-in not loaded.");
+			}
+
+			return deferred.promise;
+		}
+
+		function onReceive(data) {
+			//TODO: Do something with the data
+		}
+
+		//TODO: Test subscribing with the device, otherwise may need read/timeouts
+		function onSubscribeFail() {
+			console.log("Failed to subscribe.");
 		}
 	};
 })(angular);

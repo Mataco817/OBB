@@ -1,9 +1,9 @@
 (function(angular){
 	angular.module('bluetooth-service', [])
-		.service('bluetoothService', bluetoothService);
+	.service('bluetoothService', bluetoothService);
 
-	bluetoothService.$inject = ['$q', '$timeout', 'settingsService'];
-	function bluetoothService($q, $timeout, settingsService) {
+	bluetoothService.$inject = ['$q', '$timeout', '$window', 'settingsService'];
+	function bluetoothService($q, $timeout, $window, settingsService) {
 		var connectedDevice = {};
 		var enabled = false;
 
@@ -27,26 +27,21 @@
 		function isEnabled() {
 			var deferred = $q.defer();
 
-			if (window.bluetoothSerial && !enabled) {
-        bluetoothSerial.isEnabled(function() {
-          deferred.resolve("Bluetooth is enabled.");
-          enabled = true;
-        },
-        function() {
-          deferred.reject("Bluetooth is not enabled.");
-          enabled = false;
-        });
+			if ($window.bluetoothSerial && !enabled) {
+				bluetoothSerial.isEnabled(function() {
+					deferred.resolve("Bluetooth is enabled.");
+					enabled = true;
+				},
+				function() {
+					deferred.reject("Bluetooth is not enabled.");
+					enabled = false;
+				});
+			}
+			else if (enabled) {
+				deferred.reslove("Bluetooth already enabled!");
 			}
 			else {
-			  //$timeout(function() {
-			  if (enabled) {
-			    deferred.resolve("Bluetooth is enabled.");
-        }
-        else {
-			    deferred.reject("Initializing...");
-			    //enabled = false;
-        //}, 1000);
-        }
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -55,18 +50,19 @@
 		function isConnected() {
 			var deferred = $q.defer();
 
-			if (window.bluetoothSerial) {
-        bluetoothSerial.isConnected(function() {
-          deferred.resolve("Device is connected.");
-        },
-        function() {
-          deferred.reject("Device is not connected.");
-        });
+			if ($window.bluetoothSerial && enabled) {
+				bluetoothSerial.isConnected(function() {
+					deferred.resolve("Device is connected.");
+				},
+				function() {
+					deferred.reject("Device is not connected.");
+				});
+			}
+			else if (!enabled) {
+				deferred.reject("Bluetooth is not enabled!");
 			}
 			else {
-			  //$timeout(function() {
-			  deferred.reject("Initializing...");
-			  //}, 1000);
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -75,14 +71,20 @@
 		function enable() {
 			var deferred = $q.defer();
 
-			if (window.bluetoothSerial) {
-        bluetoothSerial.enable(function() {
-          deferred.resolve("Bluetooth enabled!");
-          enabled = true;
-        },
-        function() {
-          deferred.reject("Bluetooth was <b>not</b> enabled.");
-        });
+			if ($window.bluetoothSerial && !enabled) {
+				bluetoothSerial.enable(function() {
+					deferred.resolve("Bluetooth enabled!");
+					enabled = true;
+				},
+				function() {
+					deferred.reject("Bluetooth was <b>not</b> enabled.");
+				});
+			}
+			else if (enabled) {
+				deferred.reslove("Bluetooth already enabled!");
+			}
+			else {
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -91,13 +93,19 @@
 		function scanDevices() {
 			var deferred = $q.defer();
 
-			if (window.bluetoothSerial) {
-        bluetoothSerial.discoverUnpaired(function(devices) {
-          deferred.resolve(devices);
-        },
-        function() {
-          deferred.reject("Could not find any devices.");
-        });
+			if ($window.bluetoothSerial && enabled) {
+				bluetoothSerial.discoverUnpaired(function(devices) {
+					deferred.resolve(devices);
+				},
+				function() {
+					deferred.reject("Could not find any devices.");
+				});
+			}
+			else if (!enabled) {
+				deferred.reject("Bluetooth is not enabled!");
+			}
+			else {
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;
@@ -106,19 +114,28 @@
 		function connect(device) {
 			var deferred = $q.defer();
 
-			if (window.bluetoothSerial) {
-        bluetoothSerial.connect(device.address, function() {
-          deferred.resolve("Connected to " + device.name + "!");
-          connectedDevice = device;
-          connected = true;
+			if ($window.bluetoothSerial && enabled) {
+				bluetoothSerial.connect(device.address, function() {
+					deferred.resolve("Connected to " + device.name + "!");
+					connectedDevice = device;
+					connected = true;
 
-  //				bluetoothSerial.subscribe('\n', onReceive, onSubscribeFail);
-        },
-        function(error) {
-          deferred.resolve("Failed to connected to " + device.name + "!");
-          connectedDevice = {};
-          connected = false;
-        });
+					/* Store MAC Address of connected device */
+					settingsService.setSetting("mac_address", device.address);
+
+					//bluetoothSerial.subscribe('\n', onReceive, onSubscribeFail);
+				},
+				function(error) {
+					deferred.resolve("Failed to connected to " + device.name + "!");
+					connectedDevice = {};
+					connected = false;
+				});
+			}
+			else if (!enabled) {
+				deferred.reject("Bluetooth is not enabled!");
+			}
+			else {
+				deferred.reject("BluetoothSerial plug-in not loaded.");
 			}
 
 			return deferred.promise;

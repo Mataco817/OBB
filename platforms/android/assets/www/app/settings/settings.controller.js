@@ -109,8 +109,8 @@
 			bluetoothService.isEnabled()
 			.then(function() {
 			    vm.disableBTBtn = true;
-					vm.bluetoothBtnText = "Bluetooth Enabled";
-					vm.btEnabled = true;
+				vm.bluetoothBtnText = "Bluetooth Enabled";
+				vm.btEnabled = true;
 			});
 		});
 
