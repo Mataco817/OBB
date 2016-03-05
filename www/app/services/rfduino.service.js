@@ -12,11 +12,11 @@
 			isEnabled : isEnabled,
 			isConnected : isConnected,
 			discoverDevices : discoverDevices,
-			listDevices : listDevices,
+		//	listDevices : listDevices,
 			connect : function(device) {
 				return connect(device);
-			},
-			disconnect : disconnect
+			}//,
+			//disconnect : disconnect
 		};
 
 		return service;
@@ -71,7 +71,7 @@
 
 		/**
 		 * Some REGEX for OpenBarbell Device detection "^(OB){1}\s{1}\d+$"
-		 * 
+		 *
 		 * rfduino will call success callback each time a peripheral is discovered.
 		 * @sampleDevice {
 		 * 		"name": "RFduino",
@@ -81,62 +81,66 @@
 		 * }
 		 */
 		function discoverDevices() {
-			var deferred = $q.defer();
+    			var deferred = $q.defer();
 
-			if ($window.rfduino && enabled) {
-				// cannot resolve on first device! Resolve when timer is done
-				rfduino.discover(3, function(device) {
-					deferred.resolve(devices);
-				},
-				function() {
-					deferred.reject("Could not find any devices.");
-				});
-			}
-			else if (!enabled) {
-				deferred.reject("Bluetooth is not enabled!");
-			}
-			else {
-				deferred.reject("rfduino plug-in not loaded.");
-			}
+    			if ($window.rfduino) {
+    				// cannot resolve on first device! Resolve when timer is done
+    				rfduino.discover(3, function(device) {
+    					deferred.resolve(device);
+    					if (device.name === "OB 48") {connect(device); }
+    				},
+    				function() {
+    					deferred.reject("Could not find any devices.");
+    				});
+    			}
+    			else if (!enabled) {
+    				deferred.reject("Bluetooth is not enabled!");
+    			}
+    			else {
+    				deferred.reject("rfduino plug-in not loaded.");
+    			}
 
-			return deferred.promise;
-		}
+    			return deferred.promise;
+    		}
 
-		function connect(device) {
-			var deferred = $q.defer();
+    		function connect(device) {
+    			var deferred = $q.defer();
 
-			if ($window.rfduino && enabled) {
-				rfduino.connect(device.uuid, function() {
-					deferred.resolve("Connected to " + device.name + "!");
-					connectedDevice = device;
+    			if ($window.rfduino) {
+    				rfduino.connect(device.uuid, function() {
+    					deferred.resolve("Connected to " + device.name + "!");
+    					connectedDevice = device;
 
-					/* Store MAC Address of connected device */
-					settingsService.setSetting("mac_address", device.address);
+    					/* Store MAC Address of connected device */
+    					settingsService.setSetting("mac_address", device.address);
 
-					//rfduino.subscribe('\n', onReceive, onSubscribeFail);
-				},
-				function(error) {
-					deferred.resolve("Failed to connected to " + device.name + "!");
-					connectedDevice = {};
-				});
-			}
-			else if (!enabled) {
-				deferred.reject("Bluetooth is not enabled!");
-			}
-			else {
-				deferred.reject("rfduino plug-in not loaded.");
-			}
+    					rfduino.onData(onReceive, onSubscribeFail);
 
-			return deferred.promise;
-		}
+    					//rfduino.subscribe('\n', onReceive, onSubscribeFail);
+    				},
+    				function(error) {
+    					deferred.resolve("Failed to connected to " + device.name + "!");
+    					connectedDevice = {};
+    				});
+    			}
+    			else if (!enabled) {
+    				deferred.reject("Bluetooth is not enabled!");
+    			}
+    			else {
+    				deferred.reject("rfduino plug-in not loaded.");
+    			}
 
-		function onReceive(data) {
-			//TODO: Do something with the data
-		}
+    			return deferred.promise;
+    		}
 
-		//TODO: Test subscribing with the device, otherwise may need read/timeouts
-		function onSubscribeFail() {
-			console.log("Failed to subscribe.");
-		}
+    		function onReceive(data) {
+    			//TODO: Do something with the data
+    			console.log(data);
+    		}
+
+    		//TODO: Test subscribing with the device, otherwise may need read/timeouts
+    		function onSubscribeFail() {
+    			console.log("Failed to subscribe.");
+    		}
 	};
 })(angular);

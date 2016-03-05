@@ -3,8 +3,8 @@
 		.module('settings')
 		.controller('SettingsController', SettingsController);
 
-	SettingsController.$inject = ['$scope', '$timeout', 'settingsService', 'bluetoothService'];
-	function SettingsController($scope, $timeout, settingsService, bluetoothService) {
+	SettingsController.$inject = ['$scope', '$timeout', 'settingsService', 'bluetoothService', 'rfduinoService'];
+	function SettingsController($scope, $timeout, settingsService, bluetoothService, rfduinoService) {
 		var vm = this;
 
 		vm.bluetoothBtnText = "Enable Bluetooth";
@@ -63,7 +63,7 @@
 			vm.scanning = true;
 
 			$timeout(function() {
-				bluetoothService.scanDevices()
+				rfduinoService.discoverDevices()
 				.then(function(devices) {
 					vm.scanBtnText = "Scan Devices";
 					vm.disableScanBtn = false;
@@ -87,7 +87,7 @@
 			vm.pairing = "indeterminate";
 
 			$timeout(function() {
-				bluetoothService.connect(device)
+				rfduinoService.connect(device)
 				.then(function(response) {
 					vm.deviceConnected = true;
 					delete vm.pairing;
@@ -100,7 +100,7 @@
 		}
 
 		function getDeviceInfo(property) {
-			return bluetoothService.getConnectedDevice()[property];
+			return rfduinoService.getConnectedDevice()[property];
 		}
 
 		$scope.$on('syncSettings', function(params) {

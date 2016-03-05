@@ -28,30 +28,31 @@
 		};
 
 		/****************** Cordova Events ******************/
-		
+
 		// Check status of bluetooth once plug-in is detected
-		var unbindWatcher = $scope.$watch(function() { 
-			return $window.bluetoothSerial;
-		}, 
+		var unbindWatcher = $scope.$watch(function() {
+			return $window.rfduino;
+		},
 		function(newValue, oldValue) {
 			if (newValue !== undefined) {
 				$scope.$broadcast('checkConnectionStatus', {});
 				unbindWatcher();
 			}
 		});
-		
+
 		// Check status of bluetooth when app resumed
 		$document[0].addEventListener("deviceready", onDeviceReady, false);
+
 		function onDeviceReady() {
 			$document[0].addEventListener("pause", onPause, false);
 			$document[0].addEventListener("resume", onResume, false);
 		}
-		
+
 		// Handle the pause event
 		function onPause() {
-			
+
 		}
-		
+
 		// Handle the resume event
 		function onResume() {
 			$scope.$broadcast('checkConnectionStatus', {});
