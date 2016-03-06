@@ -42,7 +42,7 @@
 			vm.bluetoothBtnText = "Enabling Bluetooth...";
 			vm.disableBTBtn = true;
 
-			$timeout(function() {
+//			$timeout(function() {
 				bluetoothService.enable()
 				.then(function() {
 					vm.bluetoothBtnText = "Bluetooth Enabled";
@@ -52,7 +52,7 @@
 					vm.bluetoothBtnText = "Enable Bluetooth";
 					vm.disableBTBtn = false;
 				});
-			}, 2000);
+//			}, 2000);
 		}
 
 		function scanDevices() {
@@ -62,7 +62,7 @@
 			vm.disableScanBtn = true;
 			vm.scanning = true;
 
-			$timeout(function() {
+//			$timeout(function() {
 				rfduinoService.discoverDevices()
 				.then(function(devices) {
 					vm.scanBtnText = "Scan Devices";
@@ -76,7 +76,7 @@
 					vm.disableScanBtn = false;
 					vm.scanning = false;
 				});
-			}, 2000);
+//			}, 2000);
 		}
 
 		function devicesFound() {
@@ -86,7 +86,7 @@
 		function pairWithDevice(device) {
 			vm.pairing = "indeterminate";
 
-			$timeout(function() {
+//			$timeout(function() {
 				rfduinoService.connect(device)
 				.then(function(response) {
 					vm.deviceConnected = true;
@@ -96,7 +96,7 @@
 					vm.deviceConnected = false;
 					delete vm.pairing;
 				});
-			}, 2000);
+//			}, 2000);
 		}
 
 		function getDeviceInfo(property) {

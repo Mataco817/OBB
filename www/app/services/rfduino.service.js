@@ -84,17 +84,24 @@
     			var deferred = $q.defer();
 
     			if ($window.rfduino) {
-    				// cannot resolve on first device! Resolve when timer is done
+    				var devices = [];
+    				var error = false;
     				rfduino.discover(3, function(device) {
-    					deferred.resolve(device);
-    					if (device.name === "OB 48") {connect(device); }
+//    					deferred.resolve(device);
+    					devices.push(device);
+    					// For Testing TODO: Remove
+//    					if (device.name === "OB 48") { connect(device); }
     				},
     				function() {
     					deferred.reject("Could not find any devices.");
+    					error = true;
     				});
-    			}
-    			else if (!enabled) {
-    				deferred.reject("Bluetooth is not enabled!");
+    				
+    				$timeout(function() {
+    					if (!error) {
+    						deferred.resolve(devices);
+    					}
+    				}, 3000);
     			}
     			else {
     				deferred.reject("rfduino plug-in not loaded.");
@@ -133,9 +140,19 @@
     			return deferred.promise;
     		}
 
-    		function onReceive(data) {
+    		function onReceive(arrayBuffer) {
     			//TODO: Do something with the data
-    			console.log(data);
+    			//console.log("Data: " + arrayBuffer);
+    			//console.log("---bytelength: " + arrayBuffer.byteLength);
+    			
+    			var data = new Uint8Array(arrayBuffer);
+    			var dataRev = new Uint8Array(4);
+    			for (var i = 0; i < arrayBuffer.byteLength; i++) {
+    				dataRev[i] = data[3-i];
+    			}
+
+    			var dv = new DataView(dataRev.buffer);
+    			console.log("onReceive: " + dv.getFloat32(0));
     		}
 
     		//TODO: Test subscribing with the device, otherwise may need read/timeouts
