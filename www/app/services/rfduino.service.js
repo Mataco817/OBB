@@ -150,6 +150,8 @@
     			for (var i = 0; i < arrayBuffer.byteLength; i++) {
     				dataRev[i] = data[3-i];
     			}
+         //  TODO: consider reverse()
+    			
 
     			var dv = new DataView(dataRev.buffer);
     			console.log("onReceive: " + dv.getFloat32(0));
