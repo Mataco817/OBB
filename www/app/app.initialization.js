@@ -3,6 +3,6 @@
 	
 	runBlock.$inject = ['settingsService'];
 	function runBlock(settingsService) {
-		settingsService.initializeSettings();
+//		settingsService.initializeSettings();
 	};
 })(angular);

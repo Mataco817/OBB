@@ -1,39 +1,42 @@
-<ion-content layout="column" ng-class="workoutCtrl.waiting || !workoutCtrl.ready ? 'layout-align-center-center' : 'layout-align-start-center'" layout-fill>
 
-	<ion-refresher
-		pulling-text="Pull to refresh..."
-		on-refresh="workoutCtrl.doRefresh()">
-	</ion-refresher>
+<!-- <ion-content> -->
+<!-- 	<ion-refresher -->
+<!-- 		pulling-text="Pull to refresh..." -->
+<!-- 		on-refresh="workoutCtrl.doRefresh()"> -->
+<!-- 	</ion-refresher> -->
 	
-	<!-- Bluetooth Disabled Template -->
-	<!-- Contains button to direct to bluetooth settings -->
-	<div 
-		layout="column" layout-align="center center" 
-		ng-if="!workoutCtrl.waiting && !workoutCtrl.ready"
-		ng-include="'app/workout/templates/bluetooth-disabled.tmpl.html'">
-	</div>
-	 
-	<!-- Bluetooth Device Disconnected Template -->
-	<!-- Contains button to direct to bluetooth settings -->
-	<div 
-		layout="column" layout-align="center center" 
-		ng-if="workoutCtrl.waiting && !workoutCtrl.ready"
-		ng-include="'app/workout/templates/bluetooth-disconnected.tmpl.html'">
-	</div>
-
-	<!-- Bluetooth Device Ready & Waiting Template -->
-	<!-- Displays Open Barbell Icon and Greeting -->
-	<div 
-		layout="column" layout-align="center center" 
-		ng-if="workoutCtrl.waiting && workoutCtrl.ready"
-		ng-include="'app/workout/templates/waiting.tmpl.html'">
-	</div>
-	 
-	<!-- Workout Cards, once data starts being collected -->
-	<md-card 
-		class="workout-set-card"
-		ng-if="!workoutCtrl.waiting && workoutCtrl.ready"
-		ng-repeat="set in workoutCtrl.getSets() | orderBy:$index:true"
-		ng-include="'app/workout/templates/workout-card.tmpl.html'">
-	</md-card>
-</ion-content>
+	<md-content layout="column" ng-class="workoutCtrl.waiting || !workoutCtrl.ready ? 'layout-align-center-center' : 'layout-align-start-center'" layout-fill>
+		
+		<!-- Bluetooth Disabled Template -->
+		<!-- Contains button to direct to bluetooth settings -->
+		<div 
+			layout="column" layout-align="center center" 
+			ng-if="!workoutCtrl.waiting && !workoutCtrl.ready"
+			ng-include="'app/workout/templates/bluetooth-disabled.tmpl.html'">
+		</div>
+		 
+		<!-- Bluetooth Device Disconnected Template -->
+		<!-- Contains button to direct to bluetooth settings -->
+		<div 
+			layout="column" layout-align="center center" 
+			ng-if="workoutCtrl.waiting && !workoutCtrl.ready"
+			ng-include="'app/workout/templates/bluetooth-disconnected.tmpl.html'">
+		</div>
+	
+		<!-- Bluetooth Device Ready & Waiting Template -->
+		<!-- Displays Open Barbell Icon and Greeting -->
+		<div 
+			layout="column" layout-align="center center" 
+			ng-if="workoutCtrl.waiting && workoutCtrl.ready"
+			ng-include="'app/workout/templates/waiting.tmpl.html'">
+		</div>
+		 
+		<!-- Workout Cards, once data starts being collected -->
+		<md-card 
+			class="workout-set-card"
+			ng-if="workoutCtrl.getSets().length > 0 && workoutCtrl.ready"
+			ng-repeat="set in workoutCtrl.getSets() | orderBy:$index:true"
+			ng-include="'app/workout/templates/workout-card.tmpl.html'">
+		</md-card>
+	</md-content>
+<!-- </ion-content> -->

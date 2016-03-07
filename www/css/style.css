@@ -6,6 +6,10 @@ ion-tabs > div.tabs {
 	position: static;
 }
 
+/* ion-content > div { */
+/* 	height: 100%; */
+/* } */
+
 md-tab-item.md-tab {
 	overflow: visible;
 }

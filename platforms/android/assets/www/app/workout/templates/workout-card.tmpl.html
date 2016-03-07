@@ -19,7 +19,7 @@
 	</md-button>
 	
 	<div class="reps" ng-class="{'past-set' : !$first}" layout="column">
-		<h3 ng-repeat="rep in set.reps" ng-click="workoutCtrl.startSimulatedSet($last)">
+		<h3 ng-repeat="rep in set.reps">
 			{{rep.velocity}}
 		</h3>
 	</div>

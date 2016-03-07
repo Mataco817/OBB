@@ -3,8 +3,8 @@
 		.module('workout')
 		.controller('WorkoutController', WorkoutController);
 	
-	WorkoutController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'bluetoothService', 'settingsService'];
-	function WorkoutController($scope, $timeout, $document, $mdDialog, bluetoothService, settingsService) {
+	WorkoutController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
+	function WorkoutController($scope, $timeout, $document, $mdDialog, bluetoothService, rfduinoService, settingsService) {
 		var vm = this;
 		
 //		vm.waiting = waitingForSet;
@@ -12,8 +12,7 @@
 		vm.waiting = false;
 		vm.ready = false;
 		vm.getSets = getSets;
-		vm.endSet = stopSimulation;
-		vm.startSimulatedSet = startSimulatedSet;
+		vm.endSet = endSet;
 		vm.units = getUnits;
 		
 		vm.enterSetInfo = enterSetInformation;
@@ -30,18 +29,11 @@
 		var currentWorkout = {};
 		currentWorkout.sets = [];
 		
+		var currentSetTimeout = false;
+		
 		var setInProgress = false;
 		var lastExerciseName = '';
 		var lastWeight = '';
-		
-		var maxRandLimit = 0.90;
-		var minRandLimit = 0.10;
-		
-		function waitingForSet() {
-//			vm.waiting = true;
-//			checkBluetoothEnabled();
-			return currentWorkout.sets.length === 0;
-		}
 		
 		$scope.$on('checkConnectionStatus', function(params) {
 			checkBluetoothEnabled();
@@ -51,10 +43,7 @@
 		/*
 		 * Initial check if bluetooth enabled
 		 */
-		function checkBluetoothEnabled() {
-//			vm.waiting = false;
-//			checkingBluetooth = true;
-			
+		function checkBluetoothEnabled() {			
 			bluetoothService.isEnabled()
 			.then(function(response) {
 				vm.waiting = currentWorkout.sets.length === 0;
@@ -65,19 +54,21 @@
 		}
 		
 		function checkDeviceConnected() {
-//			vm.ready = false;
-			
-//			bluetoothService.isConnected()
-//			.then(function(response) {
-//				vm.ready = true;
-//			},
-//			function(reason) {
-//				console.log(reason);
-//			});
+			rfduinoService.isConnected()
+			.then(function(response) {
+				vm.ready = true;
+			},
+			function(reason) {
+				console.log(reason);
+			});
 		}
 		
 		function getUnits() {
 			return settingsService.getSetting("units");
+		}
+		
+		function waitingForSet() {
+			return currentWorkout.sets.length === 0;
 		}
 		
 		function getSets() {
@@ -92,42 +83,46 @@
 			}
 		}
 		
-		function startSimulatedSet($last) {
-			//TODO remove, just for testing
-			if (vm.waiting) { vm.waiting = false; }
-			
-			if ($last === undefined || $last === true) {
-				setInProgress = true;
+		/**
+		 * @function onRepData - callback tied to rfduinoService onData readings from device
+		 * @parameter repData - JSON object with rep information
+		 * repData = {
+		 * 		rep : imt,
+		 * 		rom : int
+		 * 		avgVel : float,
+		 * 		peakVel : float
+		 * }
+		 */
+		function onRepData(repData) {
+			$scope.$apply(function() {
+				if (!setInProgress) {
+					setInProgress = true;
+					
+					currentWorkout.sets.push({
+						exerciseName : "Current Set",
+						reps : []
+					});
+					
+					$scope.$emit('focusTab', { index : 0 });
+				}
 				
-				var setName = "Current Set"
-				currentWorkout.sets.push({
-					complete : false,
-					exerciseName : setName,
-					reps : []
-				});
-	
-				getCurrentSet().reps.push({
-					velocity : (minRandLimit + (Math.random() * (maxRandLimit - minRandLimit))).toFixed(2) 
-				});
-				simulateRep();
-			}
-		}
-		
-		function simulateRep() {
-			if (getCurrentSet().reps.length < 5) {
-				$timeout(function() {
+				if (currentSetTimeout) {
+					$timeout.cancel(currentSetTimeout);
+				}
+
+				currentSetTimeout = $timeout(function() {
 					if (setInProgress) {
-						getCurrentSet().reps.push({
-							velocity : (minRandLimit + (Math.random() * (maxRandLimit - minRandLimit))).toFixed(2)
-						});
-						
-						simulateRep();
+						endSet();
 					}
-				}, 1000);
-			}
+				}, 30000);
+			
+				getCurrentSet().reps.push({
+					velocity : repData.avgVel.toFixed(2)
+				});
+			});
 		}
 		
-		function stopSimulation() {
+		function endSet() {
 			setInProgress = false;
 
 			getCurrentSet().complete = true;
@@ -158,6 +153,8 @@
 	        	//You cancelled the dialog
 	        });
 		}
+		
+		rfduinoService.setWorkoutCallback(onRepData);
 		
 		/* Check bluetooth enabled once loaded */
 		checkBluetoothEnabled();

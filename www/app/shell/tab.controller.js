@@ -3,8 +3,8 @@
 		.module('shell')
 		.controller('TabController', TabController);
 
-	TabController.$inject = ['$scope', '$window', '$document', 'bluetoothService'];
-	function TabController($scope, $window, $document, bluetoothService) {
+	TabController.$inject = ['$scope', '$window', '$document', 'settingsService', 'rfduinoService'];
+	function TabController($scope, $window, $document, settingsService, rfduinoService) {
 		var vm = this;
 
 		vm.selectedIndex = 0;
@@ -26,6 +26,12 @@
 		vm.syncSettings = function() {
 			$scope.$broadcast('syncSettings', {});
 		};
+		
+		$scope.$on('focusTab', function(event, args) {
+			if (vm.selectedIndex !== args.index) {
+				vm.selectedIndex = args.index;
+			}
+		});
 
 		/****************** Cordova Events ******************/
 
@@ -36,6 +42,12 @@
 		function(newValue, oldValue) {
 			if (newValue !== undefined) {
 				$scope.$broadcast('checkConnectionStatus', {});
+				
+				settingsService.initializeSettings()
+				.then(function(device) {
+					rfduinoService.initializeDevice(device);
+				});
+				
 				unbindWatcher();
 			}
 		});
