@@ -6,10 +6,20 @@ module.exports = [
         "clobbers": [
             "window.bluetoothSerial"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-rfduino/www/rfduino.js",
+        "id": "cordova-plugin-rfduino.rfduino",
+        "clobbers": [
+            "rfduino"
+        ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
-{}
+{
+    "cordova-plugin-bluetooth-serial": "0.4.5",
+    "cordova-plugin-rfduino": "0.1.4"
+};
 // BOTTOM OF METADATA
 });

@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-bluetooth-serial": {
             "PACKAGE_NAME": "com.ionicframework.testtabs509143"
+        },
+        "cordova-plugin-rfduino": {
+            "PACKAGE_NAME": "com.ionicframework.testtabs509143"
         }
     },
     "dependent_plugins": {}

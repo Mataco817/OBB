@@ -3,8 +3,8 @@
 		.module('settings')
 		.controller('SettingsController', SettingsController);
 
-	SettingsController.$inject = ['$scope', '$timeout', 'settingsService', 'bluetoothService'];
-	function SettingsController($scope, $timeout, settingsService, bluetoothService) {
+	SettingsController.$inject = ['$scope', '$timeout', 'settingsService', 'bluetoothService', 'rfduinoService'];
+	function SettingsController($scope, $timeout, settingsService, bluetoothService, rfduinoService) {
 		var vm = this;
 
 		vm.bluetoothBtnText = "Enable Bluetooth";
@@ -42,7 +42,7 @@
 			vm.bluetoothBtnText = "Enabling Bluetooth...";
 			vm.disableBTBtn = true;
 
-			$timeout(function() {
+//			$timeout(function() {
 				bluetoothService.enable()
 				.then(function() {
 					vm.bluetoothBtnText = "Bluetooth Enabled";
@@ -52,7 +52,7 @@
 					vm.bluetoothBtnText = "Enable Bluetooth";
 					vm.disableBTBtn = false;
 				});
-			}, 2000);
+//			}, 2000);
 		}
 
 		function scanDevices() {
@@ -62,8 +62,8 @@
 			vm.disableScanBtn = true;
 			vm.scanning = true;
 
-			$timeout(function() {
-				bluetoothService.scanDevices()
+//			$timeout(function() {
+				rfduinoService.discoverDevices()
 				.then(function(devices) {
 					vm.scanBtnText = "Scan Devices";
 					vm.disableScanBtn = false;
@@ -76,7 +76,7 @@
 					vm.disableScanBtn = false;
 					vm.scanning = false;
 				});
-			}, 2000);
+//			}, 2000);
 		}
 
 		function devicesFound() {
@@ -86,8 +86,8 @@
 		function pairWithDevice(device) {
 			vm.pairing = "indeterminate";
 
-			$timeout(function() {
-				bluetoothService.connect(device)
+//			$timeout(function() {
+				rfduinoService.connect(device)
 				.then(function(response) {
 					vm.deviceConnected = true;
 					delete vm.pairing;
@@ -96,11 +96,11 @@
 					vm.deviceConnected = false;
 					delete vm.pairing;
 				});
-			}, 2000);
+//			}, 2000);
 		}
 
 		function getDeviceInfo(property) {
-			return bluetoothService.getConnectedDevice()[property];
+			return rfduinoService.getConnectedDevice()[property];
 		}
 
 		$scope.$on('syncSettings', function(params) {
