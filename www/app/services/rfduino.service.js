@@ -32,9 +32,7 @@
 		return service;
 		
 		function initializeDevice(device) {
-			isEnabled().then(function() {
-				connect(device);
-			});
+			connect(device);
 		}
 
 		function getConnectedDevice() {

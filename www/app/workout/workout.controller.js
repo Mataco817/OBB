@@ -103,14 +103,18 @@
 						reps : []
 					});
 					
+					/* Emit event to focus on this tab */
 					$scope.$emit('focusTab', { index : 0 });
 				}
 				
+				/* Reset callback timer to end set */
 				if (currentSetTimeout) {
 					$timeout.cancel(currentSetTimeout);
 				}
 
+				/* Set callback to end set after 30 seconds */
 				currentSetTimeout = $timeout(function() {
+					// If user has not ended set
 					if (setInProgress) {
 						endSet();
 					}
