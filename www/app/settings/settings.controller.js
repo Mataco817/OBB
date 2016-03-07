@@ -24,13 +24,15 @@
 		vm.unpairedDevices = [];
 
 		vm.deviceName = function() { return getDeviceInfo('name'); };
-		vm.deviceAddress = function() { return getDeviceInfo('address'); };
+		vm.deviceUUID = function() { return getDeviceInfo('uuid'); };
+		vm.deviceAdvertising = function() { return getDeviceInfo('advertising'); };
+		vm.deviceRSSI = function() { return getDeviceInfo('rssi'); };
 
 		/*
 		 * Internal Methods
 		 */
-		function set(setting) {
-			settingsService.setSetting(setting, vm.units);
+		function set(setting, value) {
+			settingsService.setSetting(setting, value);
 		}
 
 		function enableBluetooth() {
@@ -94,12 +96,19 @@
 
 		$scope.$on('syncSettings', function(event, args) {
 			vm.units = settingsService.getSetting("units");
+			vm.discoveryTimeout = settingsService.getSettings("discoveryTimeout");
+			vm.setTimeout = settingsService.getSettings("setTimeout");
 
 			rfduinoService.isEnabled()
 			.then(function() {
 			    vm.disableBTBtn = true;
 				vm.bluetoothBtnText = "Bluetooth Enabled";
 				vm.btEnabled = true;
+				
+				rfduinoService.isConnected()
+				.then(function() {
+					vm.deviceConnected = true;
+				});
 			});
 		});
 

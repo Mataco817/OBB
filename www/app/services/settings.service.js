@@ -41,16 +41,17 @@
 				settings.units = userSettings.units;
 				
 				//TODO: Move to rfduinoService
-				if (userSettings.deviceUUID) {
-					var device = {
-						name : userSettings.deviceName,
-						uuid : userSettings.deviceUUID,
-						advertising : userSettings.deviceAdvertising,
-						rssi : userSettings.deviceRSSI
-					};
-					
-					deferred.resolve(device);
-				}
+//				if (userSettings.deviceUUID) {
+//					var device = {
+//						name : userSettings.deviceName,
+//						uuid : userSettings.deviceUUID,
+//						advertising : userSettings.deviceAdvertising,
+//						rssi : userSettings.deviceRSSI
+//					};
+//					
+//					deferred.resolve(device);
+//				}
+				deferred.resolve();
 			})
 			.catch(function(error) {
 				var defaultSettings = angular.copy(settings);

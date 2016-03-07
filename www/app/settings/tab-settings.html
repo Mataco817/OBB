@@ -10,6 +10,14 @@
 				{{ settingsCtrl.bluetoothBtnText }}
 			</md-button>
 		</md-list-item>
+
+		<md-list-item ng-if="settingsCtrl.btEnabled">
+			<md-input-container flex>
+				<label>Discovery Time (seconds)</label>
+				<input required type="number" step="1" min="1" max="10" 
+					ng-model="settingsCtrl.discoveryTimeout" ng-change="settingsCtrl.set('discoveryTimeout', settingsCtrl.discoveryTimeout)" />
+			</md-input-container>
+		</md-list-item>
 		
 		<md-list-item ng-if="settingsCtrl.btEnabled">
 			<md-button flex
@@ -39,7 +47,9 @@
 		
 		<md-list-item class="paired-device">
 			<p>{{ settingsCtrl.deviceName() }}</p>
-			<p class="meta-data"><b>MAC Address</b>: {{ settingsCtrl.deviceAddress() }}</p>
+			<p class="meta-data"><b>UUID</b>: {{ settingsCtrl.deviceUUID() }}</p>
+			<p class="meta-data"><b>RSSI</b>: {{ settingsCtrl.deviceRSSI() }}</p>
+			<p class="meta-data"><b>Advertising</b>: {{ settingsCtrl.deviceAdvertising() }}</p>
 		</md-list-item>
 	</div>
 	
@@ -49,10 +59,18 @@
 	<md-list-item class="flex-none">
 		<md-input-container flex>
 			<label>Units</label>
-			<md-select ng-model="settingsCtrl.units" ng-change="settingsCtrl.set('units')">
+			<md-select ng-model="settingsCtrl.units" ng-change="settingsCtrl.set('units', settingsCtrl.units)">
 				<md-option value="Lbs">Pounds (Lbs)</md-option>
 				<md-option value="Kg">Kilograms (Kg)</md-option>
 			</md-select>
+		</md-input-container>
+	</md-list-item>	
+
+	<md-list-item>
+		<md-input-container flex>
+			<label>Set Timeout (seconds)</label>
+			<input required type="number" step="1" min="10" max="60" 
+				ng-model="settingsCtrl.setTimeout" ng-change="settingsCtrl.set('setTimeout', settingsCtrl.setTimeout * 1000)" />
 		</md-input-container>
 	</md-list-item>
 	
