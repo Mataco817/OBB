@@ -181,6 +181,8 @@
     			if (reading) {
         			dataRead.push(floatData);
     			}
+         //  TODO: consider reverse()
+    			
 
     			if (floatData === -1234) { 
     				reading = true; 
