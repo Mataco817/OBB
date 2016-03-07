@@ -9,7 +9,8 @@
 		var reading = false;
 		var bytesRead = 0;
 		var dataRead = [];
-		var BYTES_TO_READ = 4 * 10;
+		var START_READING = -1234;
+		var STOP_READING = -6789;
 
 		var service = {
 			initializeDevice : function(device) {
@@ -21,7 +22,9 @@
 			},
 			isEnabled : isEnabled,
 			isConnected : isConnected,
-			discoverDevices : discoverDevices,
+			discoverDevices : function(deviceList) {
+				discoverDevices(deviceList);
+			},
 		//	listDevices : listDevices,
 			connect : function(device) {
 				return connect(device);
@@ -90,16 +93,19 @@
 		 *		"rssi": -79
 		 * }
 		 */
-		function discoverDevices() {
+		function discoverDevices(deviceList) {
     			var deferred = $q.defer();
 
     			if ($window.rfduino) {
     				var devices = [];
     				var error = false;
+    				var timeout = settingsService.getSetting("discoveryTimeout");
+    				var timeoutInMs = timeout * 1000;
     				
     				isEnabled().then(function() {
-	    				rfduino.discover(3, function(device) {
+	    				rfduino.discover(timeout, function(device) {
 	    					devices.push(device);
+	    					deviceList.push(device);
 	    				},
 	    				function() {
 	    					error = true;
@@ -112,7 +118,7 @@
 	    					else {
 	    						deferred.reject("Could not find any devices.");
 	    					}
-	    				}, 3000);
+	    				}, timeoutInMs);
     				},
     				function(reason) { 
     					deferred.reject(reason);
@@ -129,7 +135,6 @@
     			var deferred = $q.defer();
 
     			if ($window.rfduino) {
-    				
     				isEnabled().then(function() {
 	    				rfduino.connect(device.uuid, function() {
 	    					deferred.resolve("Connected to " + device.name + "!");
@@ -149,9 +154,6 @@
     				function(reason) {
     					deferred.reject(reason);
     				});
-    			}
-    			else if (!enabled) {
-    				deferred.reject("Bluetooth is not enabled!");
     			}
     			else {
     				deferred.reject("rfduino plug-in not loaded.");
@@ -180,13 +182,13 @@
         			dataRead.push(floatData);
     			}    			
 
-    			if (floatData === -1234) { 
+    			if (floatData === START_READING) { 
     				reading = true; 
-					bytesRead = 4;
+					bytesRead = arrayBuffer.byteLength;
 					dataRead = [];
     			}
     			
-    			if (floatData === -6789 && reading) {
+    			if (floatData === STOP_READING) {
     				reading = false;
     				workoutCallback(constructRepData());
     			}

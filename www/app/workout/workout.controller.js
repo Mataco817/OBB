@@ -118,7 +118,7 @@
 					if (setInProgress) {
 						endSet();
 					}
-				}, 30000);
+				}, settingsService.getSetting("setTimeout"););
 			
 				getCurrentSet().reps.push({
 					velocity : repData.avgVel.toFixed(2)

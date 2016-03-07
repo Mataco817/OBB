@@ -10,7 +10,8 @@
 		
 		var settings = {
 			"units" : "Lbs",
-			"devMode" : 2
+			"setTimeout" : 30000,
+			"discoveryTimeout" : 3
 		};
 
 		var service = {
@@ -39,6 +40,7 @@
 			.then(function(userSettings) {
 				settings.units = userSettings.units;
 				
+				//TODO: Move to rfduinoService
 				if (userSettings.deviceUUID) {
 					var device = {
 						name : userSettings.deviceName,
@@ -51,11 +53,11 @@
 				}
 			})
 			.catch(function(error) {
-				db.put({
-					_id : "userSettings",
-					title : "User Settings",
-					"units" : "Lbs"
-				})
+				var defaultSettings = angular.copy(settings);
+				defaultSettings._id = "userSettings";
+				defaultSettings.title = "User Settings";
+				
+				db.put(defaultSettings)
 				.then(function(response) {
 					console.log("Successfully created default user settings!");
 				})
