@@ -47,9 +47,11 @@
 		
 		<md-list-item class="paired-device">
 			<p>{{ settingsCtrl.deviceName() }}</p>
-			<p class="meta-data"><b>UUID</b>: {{ settingsCtrl.deviceUUID() }}</p>
-			<p class="meta-data"><b>RSSI</b>: {{ settingsCtrl.deviceRSSI() }}</p>
-			<p class="meta-data"><b>Advertising</b>: {{ settingsCtrl.deviceAdvertising() }}</p>
+			<div layout layout-align="space-between start">
+				<p class="meta-data"><b>UUID</b>: {{ settingsCtrl.deviceUUID() }}</p>
+				<p class="meta-data"><b>RSSI</b>: {{ settingsCtrl.deviceRSSI() }}</p>
+				<p class="meta-data"><b>Advertising</b>: {{ settingsCtrl.deviceAdvertising() }}</p>
+			</div>
 		</md-list-item>
 	</div>
 	
@@ -57,7 +59,7 @@
 	<md-subheader class="md-no-sticky">Generic Settings</md-subheader>
 
 	<md-list-item class="flex-none">
-		<md-input-container flex>
+		<md-input-container flex style="margin-bottom: 0px;">
 			<label>Units</label>
 			<md-select ng-model="settingsCtrl.units" ng-change="settingsCtrl.set('units', settingsCtrl.units)">
 				<md-option value="Lbs">Pounds (Lbs)</md-option>
@@ -67,10 +69,11 @@
 	</md-list-item>	
 
 	<md-list-item>
-		<md-input-container flex>
+		<md-input-container flex style="margin-top: 0px;">
 			<label>Set Timeout (seconds)</label>
-			<input required type="number" step="1" min="10" max="60" 
-				ng-model="settingsCtrl.setTimeout" ng-change="settingsCtrl.set('setTimeout', settingsCtrl.setTimeout * 1000)" />
+			<!-- TODO: rework saving setting to database, may be invalid -->
+			<input required type="number" step="1" min="10" max="60" style="border-color: rgba(0,0,0,0.12);"
+				ng-model="settingsCtrl.setTimeoutInSec" ng-change="settingsCtrl.set('setTimeoutInMillis', settingsCtrl.setTimeoutInSec * 1000)" />
 		</md-input-container>
 	</md-list-item>
 	

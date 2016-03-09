@@ -62,8 +62,6 @@
 				vm.scanBtnText = "Scan Devices";
 				vm.disableScanBtn = false;
 				vm.scanning = false;
-
-//				vm.unpairedDevices = devices;
 			},
 			function(reason) {
 				vm.scanBtnText = "Scan Devices";
@@ -96,8 +94,8 @@
 
 		$scope.$on('syncSettings', function(event, args) {
 			vm.units = settingsService.getSetting("units");
-			vm.discoveryTimeout = settingsService.getSettings("discoveryTimeout");
-			vm.setTimeout = settingsService.getSettings("setTimeout");
+			vm.discoveryTimeout = settingsService.getSetting("discoveryTimeout");
+			vm.setTimeoutInSec = settingsService.getSetting("setTimeoutInMillis") / 1000;
 
 			rfduinoService.isEnabled()
 			.then(function() {
@@ -112,11 +110,13 @@
 			});
 		});
 
-		$scope.$on('enableBluetooth', function(event, args) {
+		$scope.$on('enableBluetooth',
+		function(event, args) {
 			enableBluetooth();
 		});
 
-		$scope.$on('scanDevices', function(event, args) {
+		$scope.$on('scanDevices',
+		function(event, args) {
 			scanDevices();
 		});
 	};

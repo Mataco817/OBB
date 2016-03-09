@@ -36,27 +36,27 @@
 		/****************** Cordova Events ******************/
 
 		// Check status of bluetooth once plug-in is detected
-		var unbindWatcher = $scope.$watch(function() {
-			return $window.rfduino;
-		},
-		function(newValue, oldValue) {
-			if (newValue !== undefined) {
-				$scope.$broadcast('checkConnectionStatus', {});
-				
-				settingsService.initializeSettings()
-				.then(function(device) {
-					rfduinoService.initializeDevice(device);
-				});
-				
-				unbindWatcher();
-			}
-		});
+//		var unbindWatcher = $scope.$watch(function() {
+//			return $window.rfduino;
+//		},
+//		function(newValue, oldValue) {
+//			if (newValue !== undefined) {
+//				$scope.$broadcast('checkConnectionStatus', {});
+//				
+//				settingsService.initializeSettings()
+//				.then(function() {
+//					rfduinoService.initializeDevice();
+//				});
+//				
+//				unbindWatcher();
+//			}
+//		});
 
 		// Check status of bluetooth when app resumed
 		document.addEventListener("deviceready", onDeviceReady, false);
 
 		function onDeviceReady() {
-			
+			initialize();
 			document.addEventListener("pause", onPause, false);
 			document.addEventListener("resume", onResume, false);
 		}
