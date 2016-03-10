@@ -9,19 +9,20 @@
 		var reading = false;
 		var bytesRead = 0;
 		var dataRead = [];
-		var BYTES_TO_READ = 4 * 10;
+		var START_READING = -1234;
+		var STOP_READING = -6789;
 
 		var service = {
-			initializeDevice : function(device) {
-				initializeDevice(device);
-			},
+			initializeDevice : initializeDevice,
 			getConnectedDevice : getConnectedDevice,
 			setWorkoutCallback : function(callback) {
 				setWorkoutCallback(callback);
 			},
 			isEnabled : isEnabled,
 			isConnected : isConnected,
-			discoverDevices : discoverDevices,
+			discoverDevices : function(deviceList) {
+				discoverDevices(deviceList);
+			},
 		//	listDevices : listDevices,
 			connect : function(device) {
 				return connect(device);
@@ -31,10 +32,15 @@
 
 		return service;
 		
-		function initializeDevice(device) {
-			isEnabled().then(function() {
-				connect(device);
-			});
+		function initializeDevice() {
+			var device = {
+				name : settingsService.getSetting("deviceName"),
+				uuid : settingsService.getSetting("deviceUUID"),
+				advertising : settingsService.getSetting("deviceAdvertising"),
+				rssi : settingsService.getSetting("deviceRSSI")
+			};
+			
+			connect(device);
 		}
 
 		function getConnectedDevice() {
@@ -92,124 +98,147 @@
 		 *		"rssi": -79
 		 * }
 		 */
-		function discoverDevices() {
-    			var deferred = $q.defer();
+		function discoverDevices(deviceList) {
+			var deferred = $q.defer();
 
-    			if ($window.rfduino) {
-    				var devices = [];
-    				var error = false;
-    				
-    				isEnabled().then(function() {
-	    				rfduino.discover(3, function(device) {
-	    					devices.push(device);
-	    				},
-	    				function() {
-	    					error = true;
-	    				});
-    				
-	    				$timeout(function() {
-	    					if (!error) {
-	    						deferred.resolve(devices);
-	    					}
-	    					else {
-	    						deferred.reject("Could not find any devices.");
-	    					}
-	    				}, 3000);
+			if ($window.rfduino) {
+				var devices = [];
+				var error = false;
+				var timeout = settingsService.getSetting("discoveryTimeout");
+				var timeoutInMs = timeout * 1000;
+				
+				isEnabled().then(function() {
+    				rfduino.discover(timeout, function(device) {
+    					devices.push(device);
+    					deviceList.push(device);
     				},
-    				function(reason) { 
-    					deferred.reject(reason);
+    				function() {
+    					error = true;
     				});
-    			}
-    			else {
-    				deferred.reject("rfduino plug-in not loaded.");
-    			}
+				
+    				$timeout(function() {
+    					if (!error) {
+    						deferred.resolve(devices);
+    					}
+    					else {
+    						deferred.reject("Could not find any devices.");
+    					}
+    				}, timeoutInMs);
+				},
+				function(reason) { 
+					deferred.reject(reason);
+				});
+			}
+			else {
+				deferred.reject("rfduino plug-in not loaded.");
+			}
 
-    			return deferred.promise;
-    		}
+			return deferred.promise;
+		}
 
-    		function connect(device) {
-    			var deferred = $q.defer();
+		function connect(device) {
+			var deferred = $q.defer();
 
-    			if ($window.rfduino) {
-    				
-    				isEnabled().then(function() {
-	    				rfduino.connect(device.uuid, function() {
-	    					deferred.resolve("Connected to " + device.name + "!");
-	    					connectedDevice = device;
-	
-	    					/* Store settings of connected device */
-	    					saveDeviceSettings(device);
-	
-	    					/* Subscribe to data callbacks */
-	    					rfduino.onData(onReceive, onSubscribeFail);
-	    				},
-	    				function(error) {
-	    					deferred.resolve("Failed to connected to " + device.name + "!");
-	    					connectedDevice = {};
-	    				});
+			if ($window.rfduino) {
+				isEnabled().then(function() {
+    				rfduino.connect(device.uuid, function() {
+    					deferred.resolve("Connected to " + device.name + "!");
+    					connectedDevice = device;
+
+    					/* Store settings of connected device */
+    					saveDeviceSettings(device);
+
+    					/* Subscribe to data callbacks */
+    					rfduino.onData(onReceive, onSubscribeFail);
     				},
-    				function(reason) {
-    					deferred.reject(reason);
+    				function(error) {
+    					deferred.resolve("Disconnected from " + device.name + "!");
+    					connectedDevice = {};
     				});
-    			}
-    			else if (!enabled) {
-    				deferred.reject("Bluetooth is not enabled!");
-    			}
-    			else {
-    				deferred.reject("rfduino plug-in not loaded.");
-    			}
+				},
+				function(reason) {
+					deferred.reject(reason);
+				});
+			}
+			else {
+				deferred.reject("rfduino plug-in not loaded.");
+			}
 
-    			return deferred.promise;
-    		}
-    		
-    		function saveDeviceSettings(device) {
-    			settingsService.setSetting("deviceName", device.name);
-    			settingsService.setSetting("deviceUUID", device.uuid);
-    			settingsService.setSetting("deviceAdvertising", device.advertising);
-    			settingsService.setSetting("deviceRSSI", device.rssi);
-    		}
+			return deferred.promise;
+		}
+		
+		function saveDeviceSettings(device) {
+			settingsService.setSetting("deviceName", device.name);
+			settingsService.setSetting("deviceUUID", device.uuid);
+			settingsService.setSetting("deviceAdvertising", device.advertising);
+			settingsService.setSetting("deviceRSSI", device.rssi);
+		}
 
-    		function onReceive(arrayBuffer) {
-    			var data = new Uint8Array(arrayBuffer);
-    			data.reverse();
+		function onReceive(arrayBuffer) {
+			var data = new Uint8Array(arrayBuffer);
+			data.reverse();
 
-    			var dv = new DataView(data.buffer);
-    			var floatData = dv.getFloat32(0);
-    			
-    			bytesRead += arrayBuffer.byteLength;
-    			
-    			if (reading) {
-        			dataRead.push(floatData);
-    			}
+			var dv = new DataView(data.buffer);
+			var floatData = dv.getFloat32(0);
+			
+			bytesRead += arrayBuffer.byteLength;
+			
+			if (reading) {
+    			dataRead.push(floatData);
+			}    			
 
-    			if (floatData === -1234) { 
-    				reading = true; 
-					bytesRead = 4;
-					dataRead = [];
-    			}
-    			
-    			if (floatData === -6789 && reading) {
-    				reading = false;
-    				workoutCallback(constructRepData());
-    			}
-    		}
+			if (floatData === START_READING) { 
+				reading = true; 
+				bytesRead = arrayBuffer.byteLength;
+				dataRead = [];
+			}
+			
+			if (floatData === STOP_READING) {
+				reading = false;
+				workoutCallback(constructRepData());
+			}
+		}
 
-    		//TODO: Test subscribing with the device, otherwise may need read/timeouts
-    		function onSubscribeFail() {
-    			console.log("Failed to subscribe.");
-    		}
-    		
-    		function constructRepData() {
-    			return {
-    				rep : dataRead[0],
-    				rom : dataRead[2],
-    				avgVel : dataRead[1],
-    				peakVel : dataRead[3]
-    			};
-    		}
-    		
-    		function disconnect() {
-    			
-    		}
+		function onSubscribeFail() {
+			console.log("Failed to subscribe data callbacks.");
+		}
+		
+		function constructRepData() {
+			return {
+				rep : dataRead[0],
+				rom : dataRead[2],
+				avgVel : dataRead[1],
+				peakVel : dataRead[3]
+			};
+		}
+		
+		function disconnect() {
+			var deferrd = $q.defer();
+			
+			if ($window.rfduino) {
+				isEnabled().then(function() {
+					isConnected().then(function() {
+						rfduino.disconnect(function() {
+							deferred.resolve("Disconnected from " + getConnectedDevice().name);
+							connectedDevice = {};
+						},
+						function() {
+							deferred.reject("Failed to disconnect from " + getConnectedDevice().name);
+						});
+					},
+					function(reason) {
+						deferred.reject(reason);
+					});
+				},
+				function(reason) {
+					deferred.reject(reason);
+				});
+			}
+			else {
+				deferred.reject("rfduino plug-in not loaded.");
+			}
+			
+			return deferred.promise;
+		}
 	};
 })(angular);

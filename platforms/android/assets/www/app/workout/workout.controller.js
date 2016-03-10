@@ -7,8 +7,6 @@
 	function WorkoutController($scope, $timeout, $document, $mdDialog, bluetoothService, rfduinoService, settingsService) {
 		var vm = this;
 		
-//		vm.waiting = waitingForSet;
-//		vm.waiting = checkBluetoothEnabled;
 		vm.waiting = false;
 		vm.ready = false;
 		vm.getSets = getSets;
@@ -17,11 +15,11 @@
 		
 		vm.enterSetInfo = enterSetInformation;
 		
-		vm.doRefresh = function() {
-			console.log("Refreshing...");
-			// Stop the ion-refresher from spinning
-			$scope.$broadcast('scroll.refreshComplete');
-		};
+//		vm.doRefresh = function() {
+//			console.log("Refreshing...");
+//			// Stop the ion-refresher from spinning
+//			$scope.$broadcast('scroll.refreshComplete');
+//		};
 		
 		/*
 		 * Internal Methods
@@ -60,6 +58,7 @@
 			},
 			function(reason) {
 				console.log(reason);
+				vm.ready = false;
 			});
 		}
 		
@@ -103,18 +102,22 @@
 						reps : []
 					});
 					
+					/* Emit event to focus on this tab */
 					$scope.$emit('focusTab', { index : 0 });
 				}
 				
+				/* Reset callback timer to end set */
 				if (currentSetTimeout) {
 					$timeout.cancel(currentSetTimeout);
 				}
 
+				/* Set callback to end set after 30 seconds */
 				currentSetTimeout = $timeout(function() {
+					// If user has not ended set
 					if (setInProgress) {
 						endSet();
 					}
-				}, 30000);
+				}, settingsService.getSetting("setTimeout"));
 			
 				getCurrentSet().reps.push({
 					velocity : repData.avgVel.toFixed(2)

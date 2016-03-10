@@ -10,7 +10,8 @@
 		
 		var settings = {
 			"units" : "Lbs",
-			"devMode" : 2
+			"setTimeoutInMillis" : 30000,
+			"discoveryTimeout" : 3
 		};
 
 		var service = {
@@ -39,23 +40,14 @@
 			.then(function(userSettings) {
 				settings.units = userSettings.units;
 				
-				if (userSettings.deviceUUID) {
-					var device = {
-						name : userSettings.deviceName,
-						uuid : userSettings.deviceUUID,
-						advertising : userSettings.deviceAdvertising,
-						rssi : userSettings.deviceRSSI
-					};
-					
-					deferred.resolve(device);
-				}
+				deferred.resolve();
 			})
 			.catch(function(error) {
-				db.put({
-					_id : "userSettings",
-					title : "User Settings",
-					"units" : "Lbs"
-				})
+				var defaultSettings = angular.copy(settings);
+				defaultSettings._id = "userSettings";
+				defaultSettings.title = "User Settings";
+				
+				db.put(defaultSettings)
 				.then(function(response) {
 					console.log("Successfully created default user settings!");
 				})
