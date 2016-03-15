@@ -13,42 +13,42 @@
 		var STOP_READING = -6789;
 
 		// TODO: FOR TESTING WITHOUT DEVICE
-		var mock_rfduino = {
-			enabled : true,
-			connected : false,
-			devices : [{
-			    "name": "RFduino",
-			    "uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
-			    "advertising": "echo",
-			    "rssi": -79
-			}, {
-			    "name": "OB 48",
-			    "uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
-			    "advertising": "temp",
-			    "rssi": -55
-			}],
-			isEnabled : function(success, failure) {
-				$timeout(function() {
-					if ($window.rfduino.enabled) { success(); }
-					else { failure(); }
-				}, 1000);
-			},
-			isConnected : function(success, failure) {
-				$timeout(function() {
-					if ($window.rfduino.connected) { success(); }
-					else { failure(); }
-				}, 1000);
-			},
-			discover : function(time, success, failure) {
-				$timeout(function() {
-					for (var i = 0; i < 2; i++) {
-						success($window.rfduino.devices[i]);
-					}
-				}, time / 2);
-			}
-		};
+//		var mock_rfduino = {
+//			enabled : true,
+//			connected : false,
+//			devices : [{
+//			    "name": "RFduino",
+//			    "uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
+//			    "advertising": "echo",
+//			    "rssi": -79
+//			}, {
+//			    "name": "OB 48",
+//			    "uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
+//			    "advertising": "temp",
+//			    "rssi": -55
+//			}],
+//			isEnabled : function(success, failure) {
+//				$timeout(function() {
+//					if ($window.rfduino.enabled) { success(); }
+//					else { failure(); }
+//				}, 1000);
+//			},
+//			isConnected : function(success, failure) {
+//				$timeout(function() {
+//					if ($window.rfduino.connected) { success(); }
+//					else { failure(); }
+//				}, 1000);
+//			},
+//			discover : function(time, success, failure) {
+//				$timeout(function() {
+//					for (var i = 0; i < 2; i++) {
+//						success($window.rfduino.devices[i]);
+//					}
+//				}, time / 2);
+//			}
+//		};
 		// TODO: FOR TESTING WITHOUT DEVICE
-		$window.rfduino = mock_rfduino;
+//		$window.rfduino = mock_rfduino;
 
 		var service = {
 			initializeDevice : initializeDevice,

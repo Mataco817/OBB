@@ -12,6 +12,9 @@
         },
         "cordova-plugin-rfduino": {
             "PACKAGE_NAME": "com.ionicframework.testtabs509143"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.testtabs509143"
         }
     },
     "dependent_plugins": {}

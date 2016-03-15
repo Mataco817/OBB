@@ -3,8 +3,8 @@
 		.module('workout')
 		.controller('WorkoutController', WorkoutController);
 	
-	WorkoutController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
-	function WorkoutController($scope, $timeout, $document, $mdDialog, bluetoothService, rfduinoService, settingsService) {
+	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
+	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService) {
 		var vm = this;
 		
 		vm.waiting = false;
@@ -14,6 +14,8 @@
 		vm.units = getUnits;
 		
 		vm.enterSetInfo = enterSetInformation;
+	    
+	    vm.removePadding = false;
 		
 //		vm.doRefresh = function() {
 //			console.log("Refreshing...");

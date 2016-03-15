@@ -62,6 +62,10 @@ p, div.past-set > h3 {
 	font-weight: 500;
 }
 
+#set-info-modal label, #set-info-modal .rpe-label.rpe-padding-adjust {
+	padding: 4px;
+}
+
 #set-info-modal div.md-dialog-content {
 	width: 100%;
 }
@@ -90,4 +94,8 @@ p, div.past-set > h3 {
 
 #set-info-modal .submit-set-info-btn {
 	margin-top: 22px;
+}
+
+#set-info-modal .submit-set-info-btn.submit-btn-margin-adjust {
+	margin-top: 12px;
 }

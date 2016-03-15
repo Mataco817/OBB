@@ -1,7 +1,7 @@
 <md-dialog id="set-info-modal" flex>
 	<form name="setInfo" flex>
 		<md-dialog-content layout="column" layout-align="center center" flex>
-			<div class="md-dialog-content" layout="column" layout-padding flex>
+			<div class="md-dialog-content" layout="column" ng-class="setCtrl.keyboardVisible ? '' : 'layout-padding'" flex>
 		
 				<div layout="column">
 					<label>Exercise Name</label>
@@ -13,7 +13,7 @@
 					<input name="weight" ng-model="weight" type="number" placeholder="{{setCtrl.weightPlaceholder}}">
 				</div>
 		
-				<span class="rpe-label">RPE</span>
+				<span class="rpe-label" ng-class="{'rpe-padding-adjust' : setCtrl.keyboardVisible}">RPE</span>
 				
 				<div layout layout-align="center center">
 					<md-button
@@ -47,6 +47,7 @@
 		
 				<md-button 
 					class="md-primary md-raised submit-set-info-btn" 
+					ng-class="{'submit-btn-margin-adjust' : setCtrl.keyboardVisible}"
 					ng-click="setCtrl.enterSetInfo()">
 					Done
 				</md-button>
