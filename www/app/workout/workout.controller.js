@@ -38,11 +38,17 @@
 			checkDeviceConnected();
 		});
 		
+		rfduinoService.subscribe($scope, onRfduinoStatusChange);
+		
+		function onRfduinoStatusChange() {
+			
+		}
+		
 		/*
 		 * Initial check if bluetooth enabled
 		 */
 		function checkBluetoothEnabled() {			
-			bluetoothService.isEnabled()
+			rfduinoService.isEnabled()
 			.then(function(response) {
 				vm.waiting = currentWorkout.sets.length === 0;
 			},

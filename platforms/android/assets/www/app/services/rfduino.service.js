@@ -2,8 +2,8 @@
 	angular.module('rfduino-service', [])
 	.service('rfduinoService', rfduinoService);
 
-	rfduinoService.$inject = ['$q', '$timeout', '$window', 'settingsService'];
-	function rfduinoService($q, $timeout, $window, settingsService) {
+	rfduinoService.$inject = ['$q', '$timeout', '$window', '$rootScope', 'settingsService'];
+	function rfduinoService($q, $timeout, $window, $rootScope, settingsService) {
 		var connectedDevice = {};
 		var workoutCallback = false;
 		var reading = false;
@@ -12,8 +12,49 @@
 		var START_READING = -1234;
 		var STOP_READING = -6789;
 
+		// TODO: FOR TESTING WITHOUT DEVICE
+		var mock_rfduino = {
+			enabled : true,
+			connected : false,
+			devices : [{
+			    "name": "RFduino",
+			    "uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
+			    "advertising": "echo",
+			    "rssi": -79
+			}, {
+			    "name": "OB 48",
+			    "uuid": "AEC00232-2F92-4033-8E80-FD4C2533769C",
+			    "advertising": "temp",
+			    "rssi": -55
+			}],
+			isEnabled : function(success, failure) {
+				$timeout(function() {
+					if ($window.rfduino.enabled) { success(); }
+					else { failure(); }
+				}, 1000);
+			},
+			isConnected : function(success, failure) {
+				$timeout(function() {
+					if ($window.rfduino.connected) { success(); }
+					else { failure(); }
+				}, 1000);
+			},
+			discover : function(time, success, failure) {
+				$timeout(function() {
+					for (var i = 0; i < 2; i++) {
+						success($window.rfduino.devices[i]);
+					}
+				}, time / 2);
+			}
+		};
+		// TODO: FOR TESTING WITHOUT DEVICE
+		$window.rfduino = mock_rfduino;
+
 		var service = {
 			initializeDevice : initializeDevice,
+			subscribe : function(scope, callback) {
+				subscribe(scope, callback);
+			},
 			getConnectedDevice : getConnectedDevice,
 			setWorkoutCallback : function(callback) {
 				setWorkoutCallback(callback);
@@ -21,7 +62,7 @@
 			isEnabled : isEnabled,
 			isConnected : isConnected,
 			discoverDevices : function(deviceList) {
-				discoverDevices(deviceList);
+				return discoverDevices(deviceList);
 			},
 		//	listDevices : listDevices,
 			connect : function(device) {
@@ -43,21 +84,14 @@
 			connect(device);
 		}
 		
-//		function getSavedDevice() {
-//			var devicePromise = {};
-//			devicePromise["name"] = settingsService.getSetting("deviceName");
-//			devicePromise["uuid"] = settingsService.getSetting("deviceUUID");
-//			devicePromise["advertising"] = settingsService.getSetting("deviceAdvertising");
-//			devicePromise["rssi"] = settingsService.getSetting("deviceRSSI");
-//			
-//			$q.all(devicePromise)
-//			.then(function(device) {
-//				return device;
-//			},
-//			function(reason) {
-//				return null;
-//			});
-//		}
+		function subscribe(scope, callback) {
+			var handler = $rootScope.$on('rfduino-service-event', callback);
+			scope.$on('$destroy', handler);
+		}
+		
+		function notifySubscribers() {
+			$rootScope.$emit('rfduino-service-event');
+		}
 
 		function getConnectedDevice() {
 			return connectedDevice;
@@ -118,14 +152,14 @@
 			var deferred = $q.defer();
 
 			if ($window.rfduino) {
-				var devices = [];
+//				var devices = [];
 				var error = false;
 				var timeout = settingsService.getSetting("discoveryTimeout");
 				var timeoutInMs = timeout * 1000;
 				
 				isEnabled().then(function() {
     				rfduino.discover(timeout, function(device) {
-    					devices.push(device);
+//    					devices.push(device);
     					deviceList.push(device);
     				},
     				function() {
@@ -134,7 +168,7 @@
 				
     				$timeout(function() {
     					if (!error) {
-    						deferred.resolve(devices);
+    						deferred.resolve("Done scanning.");
     					}
     					else {
     						deferred.reject("Could not find any devices.");

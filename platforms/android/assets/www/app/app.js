@@ -3,6 +3,7 @@
 // the 2nd parameter is an array of 'required' modules
 angular.module('openbarbell', [
 	'ngMaterial',
+	'ngMessages',
 	'ionic',
 	'appConfig',
 	'appRoutes',

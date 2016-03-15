@@ -1,4 +1,5 @@
-<md-content layout="column" layout-padding layout-fill>
+<md-content layout="column" layout-padding layout-fill ng-cloak>
+<form name="settingsForm">
 	<div ng-if="!settingsCtrl.deviceConnected">
 		<md-subheader class="md-no-sticky">Bluetooth &amp; Device Settings</md-subheader>
 		
@@ -14,8 +15,15 @@
 		<md-list-item ng-if="settingsCtrl.btEnabled">
 			<md-input-container flex>
 				<label>Discovery Time (seconds)</label>
-				<input required type="number" step="1" min="1" max="10" 
+				<input required name="discoveryTimeout" type="number" step="1" min="1" max="10" 
 					ng-model="settingsCtrl.discoveryTimeout" ng-change="settingsCtrl.set('discoveryTimeout', settingsCtrl.discoveryTimeout)" />
+				
+				<div class="hint">How long would you like to scan for devices?</div>
+				<div ng-messages="settingsForm.discoveryTimeout.$error" md-auto-hide="false">
+					<div ng-message="min">Must be at least 1 second</div>
+					<div ng-message="max">Must be less than 10 seconds</div>
+					<div ng-message="required">This is required</div>
+				</div>
 			</md-input-container>
 		</md-list-item>
 		
@@ -28,7 +36,7 @@
 			</md-button>
 		</md-list-item>
 		
-		<md-list-item ng-if="!settingsCtrl.devicesFound() && settingsCtrl.scanning">
+		<md-list-item ng-if="settingsCtrl.scanning">
 			<md-progress-circular style="margin: auto;" md-mode="indeterminate"></md-progress-circular>
 		</md-list-item>
 	</div>
@@ -38,7 +46,7 @@
 		
 		<md-list-item class="devices" ng-repeat="device in settingsCtrl.unpairedDevices" ng-click="settingsCtrl.pairDevice(device)">
 			<p class="meta-title">{{ device.name }}</p>
-			<p class="meta-data"><b>MAC Address</b>: {{ device.address }}</p>
+			<p class="meta-data"><b>UUID</b>: {{ device.uuid }}</p>
 		</md-list-item>
 	</div>
 	
@@ -48,8 +56,8 @@
 		<md-list-item class="paired-device">
 			<p>{{ settingsCtrl.deviceName() }}</p>
 			<div layout layout-align="space-between start">
-				<p class="meta-data"><b>UUID</b>: {{ settingsCtrl.deviceUUID() }}</p>
-				<p class="meta-data"><b>RSSI</b>: {{ settingsCtrl.deviceRSSI() }}</p>
+				<p class="meta-data"><b>UUID</b>: {{ settingsCtrl.deviceUUID() }}</p><br/>
+				<p class="meta-data"><b>RSSI</b>: {{ settingsCtrl.deviceRSSI() }}</p><br/>
 				<p class="meta-data"><b>Advertising</b>: {{ settingsCtrl.deviceAdvertising() }}</p>
 			</div>
 		</md-list-item>
@@ -68,7 +76,7 @@
 		</md-input-container>
 	</md-list-item>	
 
-	<md-list-item>
+	<md-list-item class="flex-none">
 		<md-input-container flex style="margin-top: 0px;">
 			<label>Set Timeout (seconds)</label>
 			<!-- TODO: rework saving setting to database, may be invalid -->
@@ -81,4 +89,5 @@
 		<md-backdrop class="md-opaque"></md-backdrop>
 		<md-progress-circular class="md-accent" md-mode="{{settingsCtrl.pairing}}" md-diameter="96"></md-progress-circular>
 	</div>
+</form>
 </md-content>

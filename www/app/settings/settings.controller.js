@@ -58,7 +58,7 @@
 			vm.scanning = true;
 
 			rfduinoService.discoverDevices(vm.unpairedDevices)
-			.then(function(devices) {
+			.then(function(reason) {
 				vm.scanBtnText = "Scan Devices";
 				vm.disableScanBtn = false;
 				vm.scanning = false;
