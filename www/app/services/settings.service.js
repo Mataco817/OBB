@@ -10,7 +10,7 @@
 		
 		var settings = {
 			"units" : "Lbs",
-			"setTimeout" : 30000,
+			"setTimeoutInMillis" : 30000,
 			"discoveryTimeout" : 3
 		};
 
@@ -38,19 +38,9 @@
 			
 			db.get('userSettings')
 			.then(function(userSettings) {
-				settings.units = userSettings.units;
+				settings = angular.copy(userSettings);
 				
-				//TODO: Move to rfduinoService
-				if (userSettings.deviceUUID) {
-					var device = {
-						name : userSettings.deviceName,
-						uuid : userSettings.deviceUUID,
-						advertising : userSettings.deviceAdvertising,
-						rssi : userSettings.deviceRSSI
-					};
-					
-					deferred.resolve(device);
-				}
+				deferred.resolve();
 			})
 			.catch(function(error) {
 				var defaultSettings = angular.copy(settings);

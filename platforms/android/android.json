@@ -16,6 +16,12 @@
                             "xml": "<feature name=\"RFduino\"><param name=\"android-package\" value=\"com.megster.cordova.rfduino.RFduinoPlugin\" /></feature>",
                             "count": 1
                         }
+                    ],
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" value=\"io.ionic.keyboard.IonicKeyboard\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        }
                     ]
                 }
             },
@@ -45,6 +51,9 @@
         },
         "cordova-plugin-rfduino": {
             "PACKAGE_NAME": "com.ionicframework.testtabs509143"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.testtabs509143"
         }
     },
     "dependent_plugins": {},
@@ -62,10 +71,19 @@
             "clobbers": [
                 "rfduino"
             ]
+        },
+        {
+            "file": "plugins/ionic-plugin-keyboard/www/android/keyboard.js",
+            "id": "ionic-plugin-keyboard.keyboard",
+            "clobbers": [
+                "cordova.plugins.Keyboard"
+            ],
+            "runs": true
         }
     ],
     "plugin_metadata": {
         "cordova-plugin-bluetooth-serial": "0.4.5",
-        "cordova-plugin-rfduino": "0.1.4"
+        "cordova-plugin-rfduino": "0.1.4",
+        "ionic-plugin-keyboard": "1.0.8"
     }
 }

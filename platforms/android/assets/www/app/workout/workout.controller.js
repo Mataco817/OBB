@@ -3,12 +3,10 @@
 		.module('workout')
 		.controller('WorkoutController', WorkoutController);
 	
-	WorkoutController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
-	function WorkoutController($scope, $timeout, $document, $mdDialog, bluetoothService, rfduinoService, settingsService) {
+	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
+	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService) {
 		var vm = this;
 		
-//		vm.waiting = waitingForSet;
-//		vm.waiting = checkBluetoothEnabled;
 		vm.waiting = false;
 		vm.ready = false;
 		vm.getSets = getSets;
@@ -16,12 +14,14 @@
 		vm.units = getUnits;
 		
 		vm.enterSetInfo = enterSetInformation;
+	    
+	    vm.removePadding = false;
 		
-		vm.doRefresh = function() {
-			console.log("Refreshing...");
-			// Stop the ion-refresher from spinning
-			$scope.$broadcast('scroll.refreshComplete');
-		};
+//		vm.doRefresh = function() {
+//			console.log("Refreshing...");
+//			// Stop the ion-refresher from spinning
+//			$scope.$broadcast('scroll.refreshComplete');
+//		};
 		
 		/*
 		 * Internal Methods
@@ -40,11 +40,17 @@
 			checkDeviceConnected();
 		});
 		
+		rfduinoService.subscribe($scope, onRfduinoStatusChange);
+		
+		function onRfduinoStatusChange() {
+			
+		}
+		
 		/*
 		 * Initial check if bluetooth enabled
 		 */
 		function checkBluetoothEnabled() {			
-			bluetoothService.isEnabled()
+			rfduinoService.isEnabled()
 			.then(function(response) {
 				vm.waiting = currentWorkout.sets.length === 0;
 			},
@@ -60,6 +66,7 @@
 			},
 			function(reason) {
 				console.log(reason);
+				vm.ready = false;
 			});
 		}
 		
@@ -95,6 +102,8 @@
 		 */
 		function onRepData(repData) {
 			$scope.$apply(function() {
+				vm.waiting = false;
+				
 				if (!setInProgress) {
 					setInProgress = true;
 					
@@ -103,18 +112,22 @@
 						reps : []
 					});
 					
+					/* Emit event to focus on this tab */
 					$scope.$emit('focusTab', { index : 0 });
 				}
 				
+				/* Reset callback timer to end set */
 				if (currentSetTimeout) {
 					$timeout.cancel(currentSetTimeout);
 				}
 
+				/* Set callback to end set after 30 seconds */
 				currentSetTimeout = $timeout(function() {
+					// If user has not ended set
 					if (setInProgress) {
 						endSet();
 					}
-				}, 30000);
+				}, settingsService.getSetting("setTimeoutInMillis"));
 			
 				getCurrentSet().reps.push({
 					velocity : repData.avgVel.toFixed(2)

@@ -12,47 +12,42 @@
 		vm.disableBTBtn = false;
 		vm.disableScanBtn = false;
 
-		// Default value
-		// Will have to eventually save user prefs
-//		vm.units = settingsService.getSetting("units");
-
 		vm.set = set;
 		vm.enableBluetooth = enableBluetooth;
 		vm.btEnabled = false;
 
 		vm.deviceConnected = false;
 		vm.scanning = false;
-//		vm.pairing = false;
 		vm.scanDevices = scanDevices;
 		vm.devicesFound = devicesFound;
 		vm.pairDevice = pairWithDevice;
 		vm.unpairedDevices = [];
 
 		vm.deviceName = function() { return getDeviceInfo('name'); };
-		vm.deviceAddress = function() { return getDeviceInfo('address'); };
+		vm.deviceUUID = function() { return getDeviceInfo('uuid'); };
+		vm.deviceAdvertising = function() { return getDeviceInfo('advertising'); };
+		vm.deviceRSSI = function() { return getDeviceInfo('rssi'); };
 
 		/*
 		 * Internal Methods
 		 */
-		function set(setting) {
-			settingsService.setSetting(setting, vm.units);
+		function set(setting, value) {
+			settingsService.setSetting(setting, value);
 		}
 
 		function enableBluetooth() {
 			vm.bluetoothBtnText = "Enabling Bluetooth...";
 			vm.disableBTBtn = true;
 
-//			$timeout(function() {
-				bluetoothService.enable()
-				.then(function() {
-					vm.bluetoothBtnText = "Bluetooth Enabled";
-					vm.btEnabled = true;
-				},
-				function(reason) {
-					vm.bluetoothBtnText = "Enable Bluetooth";
-					vm.disableBTBtn = false;
-				});
-//			}, 2000);
+			bluetoothService.enable()
+			.then(function() {
+				vm.bluetoothBtnText = "Bluetooth Enabled";
+				vm.btEnabled = true;
+			},
+			function(reason) {
+				vm.bluetoothBtnText = "Enable Bluetooth";
+				vm.disableBTBtn = false;
+			});
 		}
 
 		function scanDevices() {
@@ -62,21 +57,17 @@
 			vm.disableScanBtn = true;
 			vm.scanning = true;
 
-//			$timeout(function() {
-				rfduinoService.discoverDevices()
-				.then(function(devices) {
-					vm.scanBtnText = "Scan Devices";
-					vm.disableScanBtn = false;
-					vm.scanning = false;
-
-					vm.unpairedDevices = devices;
-				},
-				function(reason) {
-					vm.scanBtnText = "Scan Devices";
-					vm.disableScanBtn = false;
-					vm.scanning = false;
-				});
-//			}, 2000);
+			rfduinoService.discoverDevices(vm.unpairedDevices)
+			.then(function(reason) {
+				vm.scanBtnText = "Scan Devices";
+				vm.disableScanBtn = false;
+				vm.scanning = false;
+			},
+			function(reason) {
+				vm.scanBtnText = "Scan Devices";
+				vm.disableScanBtn = false;
+				vm.scanning = false;
+			});
 		}
 
 		function devicesFound() {
@@ -86,39 +77,46 @@
 		function pairWithDevice(device) {
 			vm.pairing = "indeterminate";
 
-//			$timeout(function() {
-				rfduinoService.connect(device)
-				.then(function(response) {
-					vm.deviceConnected = true;
-					delete vm.pairing;
-				},
-				function(reason) {
-					vm.deviceConnected = false;
-					delete vm.pairing;
-				});
-//			}, 2000);
+			rfduinoService.connect(device)
+			.then(function(response) {
+				vm.deviceConnected = true;
+				delete vm.pairing;
+			},
+			function(reason) {
+				vm.deviceConnected = false;
+				delete vm.pairing;
+			});
 		}
 
 		function getDeviceInfo(property) {
 			return rfduinoService.getConnectedDevice()[property];
 		}
 
-		$scope.$on('syncSettings', function(params) {
+		$scope.$on('syncSettings', function(event, args) {
 			vm.units = settingsService.getSetting("units");
+			vm.discoveryTimeout = settingsService.getSetting("discoveryTimeout");
+			vm.setTimeoutInSec = settingsService.getSetting("setTimeoutInMillis") / 1000;
 
-			bluetoothService.isEnabled()
+			rfduinoService.isEnabled()
 			.then(function() {
 			    vm.disableBTBtn = true;
 				vm.bluetoothBtnText = "Bluetooth Enabled";
 				vm.btEnabled = true;
+				
+				rfduinoService.isConnected()
+				.then(function() {
+					vm.deviceConnected = true;
+				});
 			});
 		});
 
-		$scope.$on('enableBluetooth', function(params) {
+		$scope.$on('enableBluetooth',
+		function(event, args) {
 			enableBluetooth();
 		});
 
-		$scope.$on('scanDevices', function(params) {
+		$scope.$on('scanDevices',
+		function(event, args) {
 			scanDevices();
 		});
 	};

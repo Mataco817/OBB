@@ -1,9 +1,8 @@
-
-<ion-content>
-	<ion-refresher
-		pulling-text="Pull to refresh..."
-		on-refresh="workoutCtrl.doRefresh()">
-	</ion-refresher>
+<!-- <ion-content> -->
+<!-- 	<ion-refresher -->
+<!-- 		pulling-text="Pull to refresh..." -->
+<!-- 		on-refresh="workoutCtrl.doRefresh()"> -->
+<!-- 	</ion-refresher> -->
 	
 	<md-content layout="column" ng-class="workoutCtrl.waiting || !workoutCtrl.ready ? 'layout-align-center-center' : 'layout-align-start-center'" layout-fill>
 		
@@ -39,4 +38,4 @@
 			ng-include="'app/workout/templates/workout-card.tmpl.html'">
 		</md-card>
 	</md-content>
-</ion-content>
+<!-- </ion-content> -->

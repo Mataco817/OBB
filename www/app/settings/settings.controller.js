@@ -24,13 +24,15 @@
 		vm.unpairedDevices = [];
 
 		vm.deviceName = function() { return getDeviceInfo('name'); };
-		vm.deviceAddress = function() { return getDeviceInfo('address'); };
+		vm.deviceUUID = function() { return getDeviceInfo('uuid'); };
+		vm.deviceAdvertising = function() { return getDeviceInfo('advertising'); };
+		vm.deviceRSSI = function() { return getDeviceInfo('rssi'); };
 
 		/*
 		 * Internal Methods
 		 */
-		function set(setting) {
-			settingsService.setSetting(setting, vm.units);
+		function set(setting, value) {
+			settingsService.setSetting(setting, value);
 		}
 
 		function enableBluetooth() {
@@ -56,12 +58,10 @@
 			vm.scanning = true;
 
 			rfduinoService.discoverDevices(vm.unpairedDevices)
-			.then(function(devices) {
+			.then(function(reason) {
 				vm.scanBtnText = "Scan Devices";
 				vm.disableScanBtn = false;
 				vm.scanning = false;
-
-//				vm.unpairedDevices = devices;
 			},
 			function(reason) {
 				vm.scanBtnText = "Scan Devices";
@@ -94,20 +94,29 @@
 
 		$scope.$on('syncSettings', function(event, args) {
 			vm.units = settingsService.getSetting("units");
+			vm.discoveryTimeout = settingsService.getSetting("discoveryTimeout");
+			vm.setTimeoutInSec = settingsService.getSetting("setTimeoutInMillis") / 1000;
 
 			rfduinoService.isEnabled()
 			.then(function() {
 			    vm.disableBTBtn = true;
 				vm.bluetoothBtnText = "Bluetooth Enabled";
 				vm.btEnabled = true;
+				
+				rfduinoService.isConnected()
+				.then(function() {
+					vm.deviceConnected = true;
+				});
 			});
 		});
 
-		$scope.$on('enableBluetooth', function(event, args) {
+		$scope.$on('enableBluetooth',
+		function(event, args) {
 			enableBluetooth();
 		});
 
-		$scope.$on('scanDevices', function(event, args) {
+		$scope.$on('scanDevices',
+		function(event, args) {
 			scanDevices();
 		});
 	};

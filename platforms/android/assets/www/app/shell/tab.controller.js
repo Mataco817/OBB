@@ -3,8 +3,8 @@
 		.module('shell')
 		.controller('TabController', TabController);
 
-	TabController.$inject = ['$scope', '$window', '$document', 'settingsService', 'rfduinoService'];
-	function TabController($scope, $window, $document, settingsService, rfduinoService) {
+	TabController.$inject = ['$scope', '$window', 'settingsService', 'rfduinoService'];
+	function TabController($scope, $window, settingsService, rfduinoService) {
 		var vm = this;
 
 		vm.selectedIndex = 0;
@@ -36,28 +36,38 @@
 		/****************** Cordova Events ******************/
 
 		// Check status of bluetooth once plug-in is detected
-		var unbindWatcher = $scope.$watch(function() {
-			return $window.rfduino;
-		},
-		function(newValue, oldValue) {
-			if (newValue !== undefined) {
-				$scope.$broadcast('checkConnectionStatus', {});
-				
-				settingsService.initializeSettings()
-				.then(function(device) {
-					rfduinoService.initializeDevice(device);
-				});
-				
-				unbindWatcher();
-			}
-		});
+//		var unbindWatcher = $scope.$watch(function() {
+//			return $window.rfduino;
+//		},
+//		function(newValue, oldValue) {
+//			if (newValue !== undefined) {
+//				$scope.$broadcast('checkConnectionStatus', {});
+//				
+//				settingsService.initializeSettings()
+//				.then(function() {
+//					rfduinoService.initializeDevice();
+//				});
+//				
+//				unbindWatcher();
+//			}
+//		});
 
 		// Check status of bluetooth when app resumed
-		$document[0].addEventListener("deviceready", onDeviceReady, false);
+		document.addEventListener("deviceready", onDeviceReady, false);
 
 		function onDeviceReady() {
-			$document[0].addEventListener("pause", onPause, false);
-			$document[0].addEventListener("resume", onResume, false);
+			initialize();
+			document.addEventListener("pause", onPause, false);
+			document.addEventListener("resume", onResume, false);
+		}
+		
+		function initialize() {
+			$scope.$broadcast('checkConnectionStatus', {});
+			
+			settingsService.initializeSettings()
+			.then(function() {
+				rfduinoService.initializeDevice();
+			});
 		}
 
 		// Handle the pause event

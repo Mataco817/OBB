@@ -1,63 +1,91 @@
-<md-content layout="column" layout-padding layout-fill>
-	<div ng-if="!settingsCtrl.deviceConnected">
-		<md-subheader class="md-no-sticky">Bluetooth &amp; Device Settings</md-subheader>
+<form name="settingsForm">
+	<md-content layout="column" layout-padding layout-fill ng-cloak>
+		<div ng-if="!settingsCtrl.deviceConnected">
+			<md-subheader class="md-no-sticky">Bluetooth &amp; Device Settings</md-subheader>
 		
-		<md-list-item>
-			<md-button flex
+			<md-button style="width: 100%;"
 				class="md-raised md-primary" 
 				ng-disabled="settingsCtrl.disableBTBtn" 
 				ng-click="settingsCtrl.enableBluetooth()">
 				{{ settingsCtrl.bluetoothBtnText }}
 			</md-button>
-		</md-list-item>
-		
-		<md-list-item ng-if="settingsCtrl.btEnabled">
-			<md-button flex
+			
+			<md-input-container style="width: 100%; margin-bottom: 0px;" ng-if="settingsCtrl.btEnabled">
+				<label>Discovery Time (seconds)</label>
+				<input required name="discoveryTimeout" type="number" step="1" min="1" max="10" style="border-color: rgba(0,0,0,0.12);"
+					ng-model="settingsCtrl.discoveryTimeout" ng-change="settingsCtrl.set('discoveryTimeout', settingsCtrl.discoveryTimeout)" />
+				
+				<div class="hint">How long would you like to scan for devices?</div>
+				<div ng-messages="settingsForm.discoveryTimeout.$error" md-auto-hide="false">
+					<div ng-message="min">Must be at least 1 second</div>
+					<div ng-message="max">Must be less than 10 seconds</div>
+					<div ng-message="required">This is required</div>
+				</div>
+			</md-input-container>
+			
+			<md-button style="width: 100%;" ng-if="settingsCtrl.btEnabled"
 				class="md-raised md-primary" 
 				ng-disabled="settingsCtrl.disableScanBtn" 
 				ng-click="settingsCtrl.scanDevices()">
 				{{ settingsCtrl.scanBtnText }}
 			</md-button>
-		</md-list-item>
+			
+			<div ng-if="settingsCtrl.scanning">
+				<md-progress-circular style="margin: auto;" md-mode="indeterminate"></md-progress-circular>
+			</div>
+		</div>
 		
-		<md-list-item ng-if="!settingsCtrl.devicesFound() && settingsCtrl.scanning">
-			<md-progress-circular style="margin: auto;" md-mode="indeterminate"></md-progress-circular>
-		</md-list-item>
-	</div>
-	
-	<div ng-if="settingsCtrl.devicesFound() && !settingsCtrl.deviceConnected">
-		<md-subheader class="md-no-sticky">Discovered Devices</md-subheader>
+		<div ng-if="settingsCtrl.devicesFound() && !settingsCtrl.deviceConnected">
+			<md-subheader class="md-no-sticky">Discovered Devices</md-subheader>
+			
+			<md-list-item class="devices" ng-repeat="device in settingsCtrl.unpairedDevices" ng-click="settingsCtrl.pairDevice(device)">
+				<p class="meta-title">{{ device.name }}</p>
+				<p class="meta-data"><b>UUID</b>: {{ device.uuid }}</p>
+			</md-list-item>
+		</div>
 		
-		<md-list-item class="devices" ng-repeat="device in settingsCtrl.unpairedDevices" ng-click="settingsCtrl.pairDevice(device)">
-			<p class="meta-title">{{ device.name }}</p>
-			<p class="meta-data"><b>MAC Address</b>: {{ device.address }}</p>
-		</md-list-item>
-	</div>
-	
-	<div ng-if="settingsCtrl.deviceConnected">
-		<md-subheader class="md-no-sticky">Paired Device</md-subheader>
+		<div ng-if="settingsCtrl.deviceConnected">
+			<md-subheader class="md-no-sticky">Paired Device</md-subheader>
+			
+			<md-list-item class="paired-device">
+				<p>{{ settingsCtrl.deviceName() }}</p>
+				<div layout layout-align="space-between start">
+					<p class="meta-data"><b>UUID</b>: {{ settingsCtrl.deviceUUID() }}</p><br/>
+					<p class="meta-data"><b>RSSI</b>: {{ settingsCtrl.deviceRSSI() }}</p><br/>
+					<p class="meta-data"><b>Advertising</b>: {{ settingsCtrl.deviceAdvertising() }}</p>
+				</div>
+			</md-list-item>
+		</div>
 		
-		<md-list-item class="paired-device">
-			<p>{{ settingsCtrl.deviceName() }}</p>
-			<p class="meta-data"><b>MAC Address</b>: {{ settingsCtrl.deviceAddress() }}</p>
-		</md-list-item>
-	</div>
+		<md-divider></md-divider>
+		<md-subheader class="md-no-sticky">Generic Settings</md-subheader>
+		
+		<div>
+			<md-input-container style="width: 100%;">
+				<label>Units</label>
+				<md-select ng-model="settingsCtrl.units" ng-change="settingsCtrl.set('units', settingsCtrl.units)">
+					<md-option value="Lbs">Pounds (Lbs)</md-option>
+					<md-option value="Kg">Kilograms (Kg)</md-option>
+				</md-select>
+			</md-input-container>
 	
-	<md-divider></md-divider>
-	<md-subheader class="md-no-sticky">Generic Settings</md-subheader>
-
-	<md-list-item class="flex-none">
-		<md-input-container flex>
-			<label>Units</label>
-			<md-select ng-model="settingsCtrl.units" ng-change="settingsCtrl.set('units')">
-				<md-option value="Lbs">Pounds (Lbs)</md-option>
-				<md-option value="Kg">Kilograms (Kg)</md-option>
-			</md-select>
-		</md-input-container>
-	</md-list-item>
-	
-	<div id="paring-dialog" ng-if="settingsCtrl.pairing" layout="column" layout-align="center center">
-		<md-backdrop class="md-opaque"></md-backdrop>
-		<md-progress-circular class="md-accent" md-mode="{{settingsCtrl.pairing}}" md-diameter="96"></md-progress-circular>
-	</div>
-</md-content>
+			<md-input-container style="width: 100%; margin-top: 0px;">
+				<label>Set Timeout (seconds)</label>
+				<input required name="setTimeout" type="number" step="1" min="5" max="60" style="border-color: rgba(0,0,0,0.12);"
+					ng-model="settingsCtrl.setTimeoutInSec" ng-change="settingsCtrl.set('setTimeoutInMillis', settingsCtrl.setTimeoutInSec * 1000)" />
+					
+				<div class="hint">Time before set auto-completion</div>
+				<div ng-messages="settingsForm.setTimeout.$error" md-auto-hide="false">
+					<div ng-message="min">Must be at least 5 second</div>
+					<div ng-message="max">Must be less than a minute</div>
+					<div ng-message="required">This is required</div>
+				</div>
+			</md-input-container>
+		</div>
+		
+		<div id="paring-dialog" ng-if="settingsCtrl.pairing" layout="column" layout-align="center center">
+			<md-backdrop class="md-opaque"></md-backdrop>
+			<md-progress-circular class="md-accent" md-mode="{{settingsCtrl.pairing}}" md-diameter="96"></md-progress-circular>
+		</div>
+	</md-content>
+</form>

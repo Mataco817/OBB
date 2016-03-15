@@ -3,9 +3,10 @@
 		.module('workout')
 		.controller('SetInformationController', SetInformationController);
 	
-	SetInformationController.$inject = ['$scope', '$mdDialog'];
-	function SetInformationController($scope, $mdDialog) {
+	SetInformationController.$inject = ['$scope', '$window', '$mdDialog'];
+	function SetInformationController($scope, $window, $mdDialog) {
 		var vm = this;
+		vm.keyboardVisible = false;
 		
 		if (vm.set.infoEntered) {
 			$scope.exerciseName = vm.set.exerciseName ? vm.set.exerciseName : '';
@@ -35,5 +36,16 @@
 			
 			$mdDialog.hide();
 		};
+		
+		$window.addEventListener('native.keyboardshow', keyboardShowHandler);
+		$window.addEventListener('native.keyboardhide', keyboardHideHandler);
+
+		function keyboardShowHandler(event) {		    
+		    vm.keyboardVisible = true;
+		}
+
+		function keyboardHideHandler(event) {		    
+		    vm.keyboardVisible = false;
+		}
 	};
 })(angular);
