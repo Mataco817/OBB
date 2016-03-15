@@ -50,6 +50,7 @@ p, div.past-set > h3 {
 
 .workout-set-card md-card-content {
 	clear: both;
+	overflow: auto;
 }
 
 #set-info-modal {

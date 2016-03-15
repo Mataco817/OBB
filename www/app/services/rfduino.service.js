@@ -42,6 +42,22 @@
 			
 			connect(device);
 		}
+		
+//		function getSavedDevice() {
+//			var devicePromise = {};
+//			devicePromise["name"] = settingsService.getSetting("deviceName");
+//			devicePromise["uuid"] = settingsService.getSetting("deviceUUID");
+//			devicePromise["advertising"] = settingsService.getSetting("deviceAdvertising");
+//			devicePromise["rssi"] = settingsService.getSetting("deviceRSSI");
+//			
+//			$q.all(devicePromise)
+//			.then(function(device) {
+//				return device;
+//			},
+//			function(reason) {
+//				return null;
+//			});
+//		}
 
 		function getConnectedDevice() {
 			return connectedDevice;

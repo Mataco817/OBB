@@ -38,7 +38,7 @@
 			
 			db.get('userSettings')
 			.then(function(userSettings) {
-				settings.units = userSettings.units;
+				settings = angular.copy(userSettings);
 				
 				deferred.resolve();
 			})

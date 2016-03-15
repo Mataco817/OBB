@@ -94,6 +94,8 @@
 		 */
 		function onRepData(repData) {
 			$scope.$apply(function() {
+				vm.waiting = false;
+				
 				if (!setInProgress) {
 					setInProgress = true;
 					
@@ -117,7 +119,7 @@
 					if (setInProgress) {
 						endSet();
 					}
-				}, settingsService.getSetting("setTimeout"));
+				}, settingsService.getSetting("setTimeoutInMillis"));
 			
 				getCurrentSet().reps.push({
 					velocity : repData.avgVel.toFixed(2)
