@@ -4,7 +4,7 @@
 
 	databaseService.$inject = ['$rootScope', '$http', '$q'];
 	function databaseService($rootScope, $http, $q) {
-		/* Connect to DB for user settings */
+		/* Connect to DB */
 		var db = new PouchDB('workouts');
 		var username = 'edideeddendedideaturaili';
 		var password = 'bfceaad6ff59f0604465aaf385494be2e95bb4db';
@@ -25,16 +25,14 @@
 			saveRecord : function(record) {
 				return saveRecord(record);
 			},
-			updateRecord : function(record) {
-				updateRecord(record);
-			},
 			deleteRecord : function(record) {
 				deleteRecord(record);
 			}
 		};
 		
 		if (remoteDb) {
-			sync();
+			/* do not sync with remote DB if testing */
+//			sync();
 		}
 
 		return service;
@@ -73,10 +71,6 @@
 			});
 
 			return deferred.promise;
-		}
-
-		function updateRecord(record) {
-			db.put(record);
 		}
 
 		function deleteRecord(record) {

@@ -12,8 +12,8 @@ p, div.past-set > h3 {
 
 .workout-set-card {
 	width: 98%;
-	background-color: white;
-	display: block;
+/* 	background-color: white; */
+/* 	display: block; */
 }
 
 .workout-set-card .workout-descriptor {

@@ -25,6 +25,23 @@ h5 {
 	margin-bottom: 0px;
 }
 
+md-card {
+	background-color: white;
+	display: block;
+}
+
+md-card md-card-title {
+	padding: 8px;
+}
+
+md-card-title .setting-headline {
+	display: block;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    margin: 0;
+}
+
 .md-subheader .md-subheader-inner {
 	padding: 0px;
 }
@@ -87,6 +104,10 @@ md-list-item.md-no-proxy.flex-none {
 	-ms-flex: 0 0 auto;
 	flex: 0 0 auto;
 	box-sizing: border-box;
+}
+
+md-select-menu > md-content {
+	background-color: white;
 }
 
 .hint {
