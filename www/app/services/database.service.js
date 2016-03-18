@@ -81,7 +81,7 @@
 
 		function deleteRecord(record) {
 			db.remove(record);
-		}s
+		}
 		
 		function sync() {
 			var opts = {
