@@ -2,77 +2,98 @@
 	angular.module('database-service', [])
 	.service('databaseService', databaseService);
 
-	databaseService.$inject = ['$http', '$q'];
-	function databaseService($http, $q) {
-		var mongoEndpoint = "http://198.199.67.144:3000/";
-		/* 
-		 * http://adrianmejia.com/blog/2014/10/01/creating-a-restful-api-tutorial-with-nodejs-and-mongodb/
-		 * Look into:
-		 *  - ExpressJS
-		 *  - MongoDB
-		 */
+	databaseService.$inject = ['$rootScope', '$http', '$q'];
+	function databaseService($rootScope, $http, $q) {
+		/* Connect to DB for user settings */
+		var db = new PouchDB('workouts');
+		var username = 'edideeddendedideaturaili';
+		var password = 'bfceaad6ff59f0604465aaf385494be2e95bb4db';
+		var remoteDb = 'https://' + username + ':' + password + '!@mataco817.cloudant.com/workouts';
+		
+		db.changes({
+			since : 'now',
+			live : true
+		}).on('change', notifySubscribers);
 
 		var service = {
+			initializeDatabase : function() {
+				return initialize();
+			},
+			subscribe : function(scope, callback) {
+				subscribe(scope, callback);
+			},
 			saveRecord : function(record) {
-				save(record);
+				return saveRecord(record);
 			},
 			updateRecord : function(record) {
-				update(record);
+				updateRecord(record);
+			},
+			deleteRecord : function(record) {
+				deleteRecord(record);
 			}
 		};
+		
+		if (remoteDb) {
+			sync();
+		}
 
 		return service;
+		
+		function initialize() {
+			notifySubscribers({
+				initialize : true
+			});
+		}
+		
+		function subscribe(scope, callback) {
+			var handler = $rootScope.$on('database-service-event', callback);
+			scope.$on('$destroy', handler);
+		}
+		
+		function notifySubscribers(changes) {
+			db.allDocs({
+				include_docs : true,
+				descending : true
+			}, 
+			function(err, doc) {
+				$rootScope.$emit('database-service-event', {
+					records : doc.rows,
+					changes : changes
+				});
+			});
+		}
 
-		function save(record) {
+		function saveRecord(record) {
 			var deferred = $q.defer();
-
-			var url = mogoEndpoint 
-				+ "?name=" + record.userName 
-				+ "&lift=" + record.lift 
-				+ "&weight=" + record.weight
-				+ "&rep=" + record.rep
-				+ "&set=" + record.set
-				+ "&velocity=" + rep.avgVelocity;
 			
-			$http({
-				url : url,
-				method : "POST",
-				data : record
-			})
-			.then(function() {
-				deferred.resolve("Created record.");
-			},
-			function() {
-				deferred.reject("Failed to create record.");
+			db.put(record, function(err, result) {
+				if (!err) {
+					deferred.resolve();
+				}
 			});
 
 			return deferred.promise;
 		}
 
-		function update(record) {
-			var deferred = $q.defer();
+		function updateRecord(record) {
+			db.put(record);
+		}
 
-			var url = mogoEndpoint 
-				+ "?name=" + record.userName 
-				+ "&lift=" + record.lift 
-				+ "&weight=" + record.weight
-				+ "&rep=" + record.rep
-				+ "&set=" + record.set
-				+ "&velocity=" + rep.avgVelocity;
+		function deleteRecord(record) {
+			db.remove(record);
+		}s
+		
+		function sync() {
+			var opts = {
+				continuous: true
+			};
 			
-			$http({
-				url : url,
-				method : "PUT",
-				data : record
-			})
-			.then(function() {
-				deferred.resolve("Updated record.");
-			},
-			function() {
-				deferred.reject("Failed to update record.");
-			});
-
-			return deferred.promise;
+			db.replicate.to(remoteDb, opts, syncError);
+			db.replicate.from(remoteDb, opts, syncError);
+		}
+		
+		function syncError(err) {
+			console.log("sync error: " + err);
 		}
 	};
 })(angular);

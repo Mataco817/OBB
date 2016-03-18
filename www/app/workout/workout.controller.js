@@ -14,14 +14,6 @@
 		vm.units = getUnits;
 		
 		vm.enterSetInfo = enterSetInformation;
-	    
-	    vm.removePadding = false;
-		
-//		vm.doRefresh = function() {
-//			console.log("Refreshing...");
-//			// Stop the ion-refresher from spinning
-//			$scope.$broadcast('scroll.refreshComplete');
-//		};
 		
 		/*
 		 * Internal Methods
