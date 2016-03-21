@@ -1,1 +1,16 @@
 <h2>Hello todo</h2>
+		
+<md-button style="width: 100%;"
+	class="md-raised md-primary" 
+	ng-click="historyCtrl.addRecord()">
+	Add Record
+</md-button>
+
+<div ng-repeat="record in historyCtrl.records">
+	<h3>{{record.doc.title}}</h3>
+		
+	<md-button style="width: 100%;"
+		ng-click="historyCtrl.deleteRecord(record.doc)">
+		Delete Record
+	</md-button>
+</div>

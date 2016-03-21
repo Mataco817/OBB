@@ -14,14 +14,6 @@
 		vm.units = getUnits;
 		
 		vm.enterSetInfo = enterSetInformation;
-	    
-	    vm.removePadding = false;
-		
-//		vm.doRefresh = function() {
-//			console.log("Refreshing...");
-//			// Stop the ion-refresher from spinning
-//			$scope.$broadcast('scroll.refreshComplete');
-//		};
 		
 		/*
 		 * Internal Methods
@@ -109,7 +101,7 @@
 					
 					currentWorkout.sets.push({
 						exerciseName : "Current Set",
-						reps : []
+						avgVelocities : []
 					});
 					
 					/* Emit event to focus on this tab */
@@ -129,9 +121,7 @@
 					}
 				}, settingsService.getSetting("setTimeoutInMillis"));
 			
-				getCurrentSet().reps.push({
-					velocity : repData.avgVel.toFixed(2)
-				});
+				getCurrentSet().avgVelocities.push(repData.avgVel.toFixed(2));
 			});
 		}
 		
@@ -141,6 +131,21 @@
 			getCurrentSet().complete = true;
 			getCurrentSet().rpe = 5;
 			getCurrentSet().exerciseName = "Set " + currentWorkout.sets.length;
+			
+			saveToDatabase();
+		}
+		
+		function saveToDatabase() {
+			var record = {
+					name : "OB Test",
+					lift : getCurrentSet().exerciseName,
+					velocities : getCurrentSet.avgVelocities.toString()
+			};
+			
+			mongodbService.saveRecord(record)
+			.then(function(data) {
+				console.log(data);
+			});
 		}
 		
 		function enterSetInformation(set, $index, $event) {		

@@ -3,22 +3,36 @@
 		.module('history')
 		.controller('HistoryController', HistoryController);
 	
-	HistoryController.$inject = ['$scope', 'databaseService'];
-	function HistoryController($scope, databaseService) {
+	HistoryController.$inject = ['$scope', 'databaseService', 'mongodbService'];
+	function HistoryController($scope, databaseService, mongodbService) {
 		var vm = this;
 		vm.records = [];
-
+		
 		vm.addRecord = function() {
 			var record = {
-				_id : new Date().toISOString(),
-				title : "test" + index.toString()
+					lift : "Squat",
+					weight : 315,
+					velocities : [0.50, 0.50, 0.50],
+					rpe : 8
 			};
 			
-			databaseService.saveRecord(record)
+			mongodbService.saveRecord(record)
 			.then(function() {
-				index++;
+				console.log("YAY");
 			});
 		};
+
+//		vm.addRecord = function() {
+//			var record = {
+//				_id : new Date().toISOString(),
+//				title : "test" + index.toString()
+//			};
+//			
+//			databaseService.saveRecord(record)
+//			.then(function() {
+//				index++;
+//			});
+//		};
 		
 		vm.deleteRecord = function(record) {
 			databaseService.deleteRecord(record);
