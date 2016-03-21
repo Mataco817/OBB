@@ -43,7 +43,7 @@
 				vm.enabling = true;
 				vm.scanning = true;
 	
-				rfduinoService.enable()
+				bluetoothService.enable()
 				.then(function() {
 					vm.bluetoothBtnText = "Bluetooth Enabled";
 					vm.enabling = false;

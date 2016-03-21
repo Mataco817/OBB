@@ -14,7 +14,7 @@
 
 		// TODO: FOR TESTING WITHOUT DEVICE
 //		var mock_rfduino = {
-//			enabled : true,
+//			enabled : false,
 //			connected : false,
 //			devices : [{
 //			    "name": "RFduino",
@@ -33,6 +33,12 @@
 //					else { failure(); }
 //				}, 1000);
 //			},
+//			enable : function(success, failure) {
+//				$timeout(function() {
+//					$window.rfduino.enabled = true;
+//					success();
+//				}, 1000);
+//			},
 //			isConnected : function(success, failure) {
 //				$timeout(function() {
 //					if ($window.rfduino.connected) { success(); }
@@ -45,9 +51,17 @@
 //						success($window.rfduino.devices[i]);
 //					}
 //				}, time / 2);
+//			},
+//			connect : function(uuid, success, failure) {
+//				$timeout(function() {
+//					$window.rfduino.connected = true;
+//					success();
+//				}, 500);
+//			},
+//			onData : function(callback, failure) {
+//				$window.rfduino.dataCallback = callback;
 //			}
 //		};
-		// TODO: FOR TESTING WITHOUT DEVICE
 //		$window.rfduino = mock_rfduino;
 
 		var service = {
@@ -60,6 +74,7 @@
 				setWorkoutCallback(callback);
 			},
 			isEnabled : isEnabled,
+			enable : enable,
 			isConnected : isConnected,
 			discoverDevices : function(deviceList) {
 				return discoverDevices(deviceList);
@@ -106,6 +121,24 @@
 
 			if ($window.rfduino) {
 				rfduino.isEnabled(function() {
+					deferred.resolve("Bluetooth is enabled.");
+				},
+				function() {
+					deferred.reject("Bluetooth is not enabled.");
+				});
+			}
+			else {
+				deferred.reject("RFduino plug-in not loaded.");
+			}
+
+			return deferred.promise;
+		}
+
+		function enable() {
+			var deferred = $q.defer();
+
+			if ($window.rfduino) {
+				rfduino.enable(function() {
 					deferred.resolve("Bluetooth is enabled.");
 				},
 				function() {

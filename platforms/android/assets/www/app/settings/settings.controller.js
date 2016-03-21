@@ -15,6 +15,7 @@
 		vm.set = set;
 		vm.enableBluetooth = enableBluetooth;
 		vm.btEnabled = false;
+		vm.enabling = false;
 
 		vm.deviceConnected = false;
 		vm.scanning = false;
@@ -36,18 +37,26 @@
 		}
 
 		function enableBluetooth() {
-			vm.bluetoothBtnText = "Enabling Bluetooth...";
-			vm.disableBTBtn = true;
-
-			bluetoothService.enable()
-			.then(function() {
-				vm.bluetoothBtnText = "Bluetooth Enabled";
-				vm.btEnabled = true;
-			},
-			function(reason) {
-				vm.bluetoothBtnText = "Enable Bluetooth";
-				vm.disableBTBtn = false;
-			});
+			if (vm.btEnabled) {
+				vm.bluetoothBtnText = "Enabling Bluetooth...";
+				vm.disableBTBtn = true;
+				vm.enabling = true;
+				vm.scanning = true;
+	
+				bluetoothService.enable()
+				.then(function() {
+					vm.bluetoothBtnText = "Bluetooth Enabled";
+					vm.enabling = false;
+					vm.scanning = false;
+				},
+				function(reason) {
+					vm.bluetoothBtnText = "Enable Bluetooth";
+					vm.disableBTBtn = false;
+					vm.btEnabled = false;
+					vm.enabling = false;
+					vm.scanning = false;
+				});
+			}
 		}
 
 		function scanDevices() {
@@ -112,6 +121,7 @@
 
 		$scope.$on('enableBluetooth',
 		function(event, args) {
+			vm.btEnabled = true;
 			enableBluetooth();
 		});
 

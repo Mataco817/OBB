@@ -12,7 +12,7 @@ angular.module('openbarbell', [
 	'history',
 	'settings',
 	/* Services */
-	'bluetooth-service', 'rfduino-service', 'settings-service', 'database-service'
+	'bluetooth-service', 'rfduino-service', 'settings-service', 'database-service', 'mongodb-service'
 ]);
 
 //.run(function($ionicPlatform) {
