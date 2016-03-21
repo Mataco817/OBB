@@ -55,16 +55,29 @@
 
 			var url = "http://localhost:1337/198.199.67.144:3000/getRecords";
 			
-			$http({
-				url : url,
-				method : "GET",
-			})
-			.then(function(records) {
-				deferred.resolve(records);
-			},
-			function(data) {
-				deferred.reject("Failed to create record.");
-			});
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == 4 && xhttp.status == 200) {
+					console.log(xhttp.responseText);
+					deferred.resolve();
+				}
+				else {
+					deferred.reject();
+				}
+			};
+			xhttp.open("GET", url, true);
+			xhttp.send();
+			
+//			$http({
+//				url : url,
+//				method : "GET",
+//			})
+//			.then(function(records) {
+//				deferred.resolve(records);
+//			},
+//			function(data) {
+//				deferred.reject("Failed to create record.");
+//			});
 
 			return deferred.promise;
 		}
