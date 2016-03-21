@@ -1,16 +1,17 @@
-<h2>Hello todo</h2>
+<!-- <div ng-repeat="record in historyCtrl.records"> -->
+<!-- 	<h3>{{record.doc.title}}</h3> -->
 		
-<md-button style="width: 100%;"
-	class="md-raised md-primary" 
-	ng-click="historyCtrl.addRecord()">
-	Add Record
-</md-button>
+<!-- 	<md-button style="width: 100%;" -->
+<!-- 		ng-click="historyCtrl.deleteRecord(record.doc)"> -->
+<!-- 		Delete Record -->
+<!-- 	</md-button> -->
+<!-- </div> -->
 
-<div ng-repeat="record in historyCtrl.records">
-	<h3>{{record.doc.title}}</h3>
-		
-	<md-button style="width: 100%;"
-		ng-click="historyCtrl.deleteRecord(record.doc)">
-		Delete Record
-	</md-button>
-</div>
+<md-grid-list md-cols="2" md-row-height="1:1" md-gutter="8px">
+	<md-grid-tile ng-repeat="record in historyCtrl.records" md-rowspan="1" md-colspan="1">
+		<span ng-repeat="velocity in record.velocities">{{velocity}}</span>
+		<md-grid-tile-footer>
+			<h3>Exercise: {{record.lift}} - {{record.date}}</h3>
+		</md-grid-tile-footer>
+	</md-grid-tile>
+</md-grid-list>

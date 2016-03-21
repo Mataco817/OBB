@@ -86,7 +86,7 @@
 		 * @function onRepData - callback tied to rfduinoService onData readings from device
 		 * @parameter repData - JSON object with rep information
 		 * repData = {
-		 * 		rep : imt,
+		 * 		rep : int,
 		 * 		rom : int
 		 * 		avgVel : float,
 		 * 		peakVel : float
