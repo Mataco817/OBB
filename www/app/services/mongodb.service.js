@@ -74,17 +74,17 @@
 			/*
 			 * $http automatically attempts to convert responses to JSON objects
 			 * but does not work since the response needs to be altered to be JSON ready
+			$http({
+				url : url,
+				method : "GET",
+			})
+			.then(function(records) {
+				deferred.resolve(records);
+			},
+			function(data) {
+				deferred.reject("Failed to create record.");
+			});
 			 */
-//			$http({
-//				url : url,
-//				method : "GET",
-//			})
-//			.then(function(records) {
-//				deferred.resolve(records);
-//			},
-//			function(data) {
-//				deferred.reject("Failed to create record.");
-//			});
 
 			return deferred.promise;
 		}
