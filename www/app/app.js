@@ -4,6 +4,7 @@
 angular.module('openbarbell', [
 	'ngMaterial',
 	'ngMessages',
+	'ngAnimate',
 	'ionic',
 	'appConfig',
 	'appRoutes',

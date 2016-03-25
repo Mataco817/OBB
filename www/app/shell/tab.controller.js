@@ -3,9 +3,42 @@
 		.module('shell')
 		.controller('TabController', TabController);
 
-	TabController.$inject = ['$scope', '$window', 'settingsService', 'rfduinoService'];
-	function TabController($scope, $window, settingsService, rfduinoService) {
+	TabController.$inject = ['$scope', '$rootScope', '$window', 'settingsService', 'rfduinoService'];
+	function TabController($scope, $rootScope, $window, settingsService, rfduinoService) {
 		var vm = this;
+		
+		var $element = angular.element;
+		
+		$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+            var animated = $element.find('ui-view');
+            $element(animated).removeClass('scrolled');
+            $element(animated).removeClass('modal');
+            var forward = toState.name > fromState.name;
+            if (forward) {
+              $element(animated[0]).removeClass('backward');
+              switch (toState.name) {
+                case 'tab.1':
+                case 'tab.2':
+                  $scope.anim = 'scrolled';
+                  break;
+                case 'tab.3':
+                  $scope.anim = 'scrolled';
+                  break;
+              }
+            } else {
+              $element(animated[0]).addClass('backward');
+              switch (toState.name) {
+                case 'tab.1':
+                  $scope.anim = 'scrolled';
+                  break;
+                case 'tab.2':
+                case 'tab.3':
+                  $scope.anim = 'scrolled';
+                  break;
+              }
+            }
+            $element(animated).addClass($scope.anim);
+          });
 
 		vm.selectedIndex = 0;
 
@@ -79,5 +112,6 @@
 		function onResume() {
 			$scope.$broadcast('checkConnectionStatus', {});
 		}
+//        $mainScope = $scope;
 	};
 })(angular);

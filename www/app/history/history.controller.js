@@ -6,7 +6,7 @@
 	HistoryController.$inject = ['$scope', 'databaseService', 'mongodbService'];
 	function HistoryController($scope, databaseService, mongodbService) {
 		var vm = this;
-		vm.records = [];
+//		vm.records = [];
 		
 		/*
 		 * Internal Methods

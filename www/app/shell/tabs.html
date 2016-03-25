@@ -1,13 +1,15 @@
 <md-tabs md-stretch-tabs="always" layout-fill class="md-primary" md-selected="tabCtrl.selectedIndex" md-swipe-content="true" md-no-pagination="true">
-	<md-tab layout="column" label="Workout" md-on-select="tabCtrl.checkConnection()">
-		<md-tab-content ui-view="tab-workout" flex layout-fill></md-tab-content>
+	<md-tab ui-sref="tab.1" layout="column" label="Workout" md-on-select="tabCtrl.checkConnection()">
+<!-- 		<md-tab-content ui-view="tab-workout" flex layout-fill></md-tab-content> -->
 	</md-tab>
 	
-	<md-tab layout="column" label="History">
-		<md-tab-content ui-view="tab-history" flex layout-fill></md-tab-content>
+	<md-tab ui-sref="tab.2" layout="column" label="History">
+<!-- 		<md-tab-content ui-view="tab-history" flex layout-fill></md-tab-content> -->
 	</md-tab>
 
-	<md-tab layout="column" label="Settings" md-on-select="tabCtrl.syncSettings()">
-		<md-tab-content ui-view="tab-settings" flex layout-fill></md-tab-content>
+	<md-tab ui-sref="tab.3" layout="column" label="Settings" md-on-select="tabCtrl.syncSettings()">
+<!-- 		<md-tab-content ui-view="tab-settings" flex layout-fill></md-tab-content> -->
 	</md-tab>
 </md-tabs>
+<!-- 		<md-tab-content ui-view="tab-workout" flex layout-fill></md-tab-content> -->
+<ui-view class="page {{anim}}"></ui-view>

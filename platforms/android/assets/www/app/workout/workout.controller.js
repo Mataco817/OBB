@@ -3,8 +3,8 @@
 		.module('workout')
 		.controller('WorkoutController', WorkoutController);
 	
-	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
-	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService) {
+	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'mongodbService', 'settingsService'];
+	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, mongodbService, settingsService) {
 		var vm = this;
 		
 		vm.waiting = false;
@@ -86,13 +86,15 @@
 		 * @function onRepData - callback tied to rfduinoService onData readings from device
 		 * @parameter repData - JSON object with rep information
 		 * repData = {
-		 * 		rep : imt,
+		 * 		rep : int,
 		 * 		rom : int
 		 * 		avgVel : float,
 		 * 		peakVel : float
 		 * }
 		 */
 		function onRepData(repData) {
+//			console.log(repData.avgVel);
+			
 			$scope.$apply(function() {
 				vm.waiting = false;
 				
@@ -100,6 +102,7 @@
 					setInProgress = true;
 					
 					currentWorkout.sets.push({
+						id : currentWorkout.sets.length,
 						exerciseName : "Current Set",
 						avgVelocities : []
 					});
@@ -137,9 +140,11 @@
 		
 		function saveToDatabase() {
 			var record = {
+					id : getCurrentSet().id,
 					name : "OB Test",
 					lift : getCurrentSet().exerciseName,
-					velocities : getCurrentSet.avgVelocities.toString()
+					velocities : getCurrentSet().avgVelocities.toString(),
+					rpe : getCurrentSet().rpe
 			};
 			
 			mongodbService.saveRecord(record)
@@ -167,6 +172,20 @@
 	        .then(function() {
 	        	lastExerciseName = set.exerciseName;
 	        	lastWeight = set.weight;
+	        	
+				var record = {
+						id : set.id,
+						name : "OB Test",
+						lift : set.exerciseName,
+						weight : set.weight,
+						velocities : set.avgVelocities.toString(),
+						rpe : set.rpe
+				};
+				
+				mongodbService.updateRecord(record)
+				.then(function(data) {
+					console.log(data);
+				});
 	        }, function() {
 	        	//You cancelled the dialog
 	        });

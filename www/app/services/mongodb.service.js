@@ -4,7 +4,7 @@
 
 	mongodbService.$inject = ['$http', '$q', '$timeout'];
 	function mongodbService($http, $q, $timeout) {
-		var mongoEndpoint = "http://198.199.67.144:3000/";
+		var mongoEndpoint = "http://localhost:1337/198.199.67.144:3000/";
 		/* 
 		 * http://adrianmejia.com/blog/2014/10/01/creating-a-restful-api-tutorial-with-nodejs-and-mongodb/
 		 * Look into:
@@ -14,6 +14,9 @@
 
 		var service = {
 			saveRecord : function(record) {
+				return save(record);
+			},
+			updateRecord : function(record) {
 				return save(record);
 			},
 			getAllRecords : function() {
@@ -29,8 +32,9 @@
 		function save(record) {
 			var deferred = $q.defer();
 
-			var url = "http://localhost:1337/198.199.67.144:3000/" 
-				+ "?name=" + "OB Test"
+			var url = mongoEndpoint
+				+ "?setid=" + record.id
+				+ "&name=" + "OB Test"
 				+ "&lift=" + record.lift 
 				+ "&weight=" + record.weight
 				+ "&velocities=" + record.velocities.toString()
@@ -53,7 +57,7 @@
 		function getAll() {
 			var deferred = $q.defer();
 
-			var url = "http://localhost:1337/198.199.67.144:3000/getRecords";
+			var url = mongoEndpoint + "getRecords";
 			
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
@@ -94,7 +98,7 @@
 			var commaSeparated = response.replace(/}{/g, "},{");
 			
 			/* Remove any double quotes (ex ""Some Text"") */
-			var extraQuotesRemoved = commaSeparated.replace(/""/g, "\"");
+			var extraQuotesRemoved = commaSeparated.replace(/\\"/g, "");
 			
 			/* Add array bracket to beginning */
 			var arrayBegin = [extraQuotesRemoved.slice(0, 0), '[', extraQuotesRemoved.slice(0)].join('');

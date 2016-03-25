@@ -2,8 +2,8 @@
 	angular.module('mongodb-service', [])
 	.service('mongodbService', mongodbService);
 
-	mongodbService.$inject = ['$http', '$q'];
-	function mongodbService($http, $q) {
+	mongodbService.$inject = ['$http', '$q', '$timeout'];
+	function mongodbService($http, $q, $timeout) {
 		var mongoEndpoint = "http://198.199.67.144:3000/";
 		/* 
 		 * http://adrianmejia.com/blog/2014/10/01/creating-a-restful-api-tutorial-with-nodejs-and-mongodb/
@@ -17,7 +17,13 @@
 				return save(record);
 			},
 			updateRecord : function(record) {
-				update(record);
+				return save(record);
+			},
+			getAllRecords : function() {
+				return getAll();
+			},
+			getRecordByName : function(name) {
+				return getByName();
 			}
 		};
 
@@ -26,8 +32,9 @@
 		function save(record) {
 			var deferred = $q.defer();
 
-			var url = "http://localhost:1337/198.199.67.144:3000/" 
-				+ "?name=" + "OB Test"
+			var url = mongoEndpoint
+				+ "?setid=" + record.id
+				+ "&name=" + "OB Test"
 				+ "&lift=" + record.lift 
 				+ "&weight=" + record.weight
 				+ "&velocities=" + record.velocities.toString()
@@ -45,32 +52,62 @@
 			});
 
 			return deferred.promise;
-		}
+		}	
 
-		function update(record) {
+		function getAll() {
 			var deferred = $q.defer();
 
-			var url = mogoEndpoint 
-				+ "?name=" + record.userName 
-				+ "&lift=" + record.lift 
-				+ "&weight=" + record.weight
-				+ "&rep=" + record.rep
-				+ "&set=" + record.set
-				+ "&velocity=" + rep.avgVelocity;
+			var url = mongoEndpoint + "getRecords";
 			
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				// if done and OK status
+				if (xhttp.readyState == 4 && xhttp.status == 200) {
+					var jsonObj = getJSONObject(xhttp.responseText);
+					deferred.resolve(jsonObj);
+				}
+				// if done and not OK status
+				else if (xhttp.readyState == 4 && xhttp.status != 200) {
+					deferred.reject();
+				}
+			};
+			
+			xhttp.open("GET", url, true);
+			xhttp.send();
+			
+			/*
+			 * $http automatically attempts to convert responses to JSON objects
+			 * but does not work since the response needs to be altered to be JSON ready
 			$http({
 				url : url,
-				method : "PUT",
-				data : record
+				method : "GET",
 			})
-			.then(function() {
-				deferred.resolve("Updated record.");
+			.then(function(records) {
+				deferred.resolve(records);
 			},
-			function() {
-				deferred.reject("Failed to update record.");
+			function(data) {
+				deferred.reject("Failed to create record.");
 			});
+			 */
 
 			return deferred.promise;
+		}
+		
+		function getJSONObject(response) {
+			/* Add commas in between set records */
+			var commaSeparated = response.replace(/}{/g, "},{");
+			
+			/* Remove any double quotes (ex ""Some Text"") */
+			var extraQuotesRemoved = commaSeparated.replace(/\\"/g, "");
+			
+			/* Add array bracket to beginning */
+			var arrayBegin = [extraQuotesRemoved.slice(0, 0), '[', extraQuotesRemoved.slice(0)].join('');
+			
+			/* Add array bracker to end */
+			var arrayEnd = [arrayBegin.slice(0, arrayBegin.length), ']', arrayBegin.slice(arrayBegin.length)].join('');
+			
+			/* parse to JSON object */
+			return JSON.parse(arrayEnd);
 		}
 	};
 })(angular);

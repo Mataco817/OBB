@@ -1,16 +1,14 @@
-<h2>Hello todo</h2>
-		
-<md-button style="width: 100%;"
-	class="md-raised md-primary" 
-	ng-click="historyCtrl.addRecord()">
-	Add Record
-</md-button>
-
-<div ng-repeat="record in historyCtrl.records">
-	<h3>{{record.doc.title}}</h3>
-		
-	<md-button style="width: 100%;"
-		ng-click="historyCtrl.deleteRecord(record.doc)">
-		Delete Record
-	</md-button>
-</div>
+<md-card ng-repeat="record in historyCtrl.records">
+	<md-card-title>
+		<md-card-title-text>
+			<span class="setting-headline">{{record.lift}}</span>
+			<span class="md-subhead">{{record.date}}</span>
+		</md-card-title-text>
+	</md-card-title>
+	
+	<md-card-content>
+		<p ng-repeat="velocity in record.velocities track by $index">
+			<span>{{velocity}}</span>
+		</p>
+	</md-card-content>
+</md-card>

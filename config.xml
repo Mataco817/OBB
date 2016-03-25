@@ -10,6 +10,7 @@
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="http://*/*"/>
+  <allow-intent href="*://198.199.67.144:3000/*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
