@@ -1,0 +1,27 @@
+#history-toolbar {
+/*     border: solid 0px; */
+/*     border-bottom-width: 1px; */
+/*     border-bottom-color: rgba(0,0,0,0.12); */
+    color: rgb(33,150,243);
+}
+
+#history-toolbar > div.md-toolbar-tools {
+    background-color: white;
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container {
+	margin: 0;
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value {
+	border: 0;
+}
+
+#history-toolbar md-select.md-default-theme:not([disabled]):focus .md-select-value,
+#history-toolbar md-select:not([disabled]):focus .md-select-value {
+	color: rgb(33,150,243);
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value > span {
+	overflow: visible;
+}

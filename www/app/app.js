@@ -8,6 +8,7 @@ angular.module('openbarbell', [
 	'appConfig',
 	'appRoutes',
 	'shell',
+	'setup',
 	'workout',
 	'history',
 	'settings',

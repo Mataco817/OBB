@@ -55,6 +55,7 @@
 
 			var url = "http://localhost:1337/198.199.67.144:3000/getRecords";
 			
+			/*
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				// if done and OK status
@@ -70,10 +71,12 @@
 			
 			xhttp.open("GET", url, true);
 			xhttp.send();
+			 */
 			
 			/*
 			 * $http automatically attempts to convert responses to JSON objects
 			 * but does not work since the response needs to be altered to be JSON ready
+			 */
 			$http({
 				url : url,
 				method : "GET",
@@ -84,7 +87,6 @@
 			function(data) {
 				deferred.reject("Failed to create record.");
 			});
-			 */
 
 			return deferred.promise;
 		}
