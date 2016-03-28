@@ -10,19 +10,20 @@
         <span flex></span>
 		
 		<md-menu md-position-mode="target-right target">
-			<md-button aria-label="Open Menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+			<md-button aria-label="Open Options Menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
 				<md-icon style="fill: rgb(33,150,243);" md-menu-origin md-svg-icon="img/icons/more_vert.svg"></md-icon>
 			</md-button>
 
 			<md-menu-content width="4">
-				<md-menu-item ng-repeat="setting in historyCtrl.settings">
+				<md-menu-item ng-repeat-start="opt in historyCtrl.options">
 					<md-button ng-click="ctrl.announceClick($index)">
 						<div layout="row">
-							<p flex>{{setting.title}}</p>
-							<md-icon md-menu-align-target md-svg-icon="{{setting.icon}}" style="fill: rgb(33,150,243); margin: auto 3px auto 0;"></md-icon>
+							<p flex>{{opt.title}}</p>
+							<md-icon md-menu-align-target md-svg-icon="{{opt.icon}}" style="margin: auto 3px auto 0;"></md-icon>
 						</div>
 					</md-button>
 				</md-menu-item>
+				<md-menu-divider ng-if="$first" ng-repeat-end></md-menu-divider>
 			</md-menu-content>
 		</md-menu>
 	</div>

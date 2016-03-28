@@ -9,7 +9,7 @@
 		vm.sortingMethod = "Desc";
 		vm.records = [];
 		
-		vm.settings = [{
+		vm.options = [{
 			title : 'Select...',
 			icon : 'img/icons/check_circle.svg'
 		},
