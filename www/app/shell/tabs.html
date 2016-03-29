@@ -1,14 +1,14 @@
-<md-tabs md-stretch-tabs="always" layout-fill class="md-primary" md-selected="tabCtrl.selectedIndex" md-swipe-content="true" md-no-pagination="true">
+<md-tabs layout-fill md-stretch-tabs="always" class="md-primary" md-selected="tabCtrl.selectedIndex" md-swipe-content="true" md-no-pagination="true">
 	<md-tab layout="column" label="Workout" md-on-select="tabCtrl.checkConnection()">
-		<md-tab-content ui-view="tab-workout" flex layout-fill></md-tab-content>
+		<md-tab-content ui-view="tab-workout" flex></md-tab-content>
 	</md-tab>
 	
 	<md-tab layout="column" label="History">
-		<md-tab-content ui-view="tab-history" flex layout-fill></md-tab-content>
+		<md-tab-content ui-view="tab-history" flex></md-tab-content>
 	</md-tab>
 
 	<md-tab layout="column" label="Settings" md-on-select="tabCtrl.syncSettings()">
-		<md-tab-content ui-view="tab-settings" flex layout-fill></md-tab-content>
+		<md-tab-content ui-view="tab-settings" flex></md-tab-content>
 	</md-tab>
 </md-tabs>
 
