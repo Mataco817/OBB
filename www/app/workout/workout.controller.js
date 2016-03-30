@@ -132,14 +132,17 @@
 			getCurrentSet().rpe = 5;
 			getCurrentSet().exerciseName = "Set " + currentWorkout.sets.length;
 			
-			saveToDatabase();
+			saveToDatabase(getCurrentSet());
 		}
 		
-		function saveToDatabase() {
+		function saveToDatabase(set) {
 			var record = {
+					id : set.id,
 					name : "OB Test",
-					lift : getCurrentSet().exerciseName,
-					velocities : getCurrentSet.avgVelocities.toString()
+					lift : set.exerciseName,
+					weight : set.weight,
+					velocities : set.avgVelocities.toString(),
+					rpe : set.rpe
 			};
 			
 			mongodbService.saveRecord(record)
@@ -167,6 +170,8 @@
 	        .then(function() {
 	        	lastExerciseName = set.exerciseName;
 	        	lastWeight = set.weight;
+				
+				saveToDatabase(set);
 	        }, function() {
 	        	//You cancelled the dialog
 	        });

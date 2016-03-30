@@ -26,3 +26,24 @@
 #history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value > span {
 	overflow: visible;
 }
+
+#history-content {
+	overflow-x: hidden;
+}
+
+md-card.history-card {
+	margin: 4px;
+}
+
+div.col-xs-4.limit-both {
+	padding-right: 8px;
+	padding-left: 8px;
+}
+
+div.col-xs-4.limit-left {
+	padding-left: 1px;
+}
+
+div.col-xs-4.limit-right {
+	padding-right: 1px;
+}
