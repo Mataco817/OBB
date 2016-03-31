@@ -21,6 +21,11 @@ module.exports = [
             "cordova.plugins.Keyboard"
         ],
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-whitelist/whitelist.js",
+        "id": "cordova-plugin-whitelist.whitelist",
+        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -28,7 +33,8 @@ module.exports.metadata =
 {
     "cordova-plugin-bluetooth-serial": "0.4.5",
     "cordova-plugin-rfduino": "0.1.4",
-    "ionic-plugin-keyboard": "1.0.8"
+    "ionic-plugin-keyboard": "1.0.8",
+    "cordova-plugin-whitelist": "1.2.1"
 };
 // BOTTOM OF METADATA
 });

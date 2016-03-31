@@ -1,0 +1,49 @@
+#history-toolbar {
+    color: rgb(33,150,243);
+}
+
+#history-toolbar:not(.md-whiteframe-z1) {
+	box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+#history-toolbar > div.md-toolbar-tools {
+    background-color: white;
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container {
+	margin: 0;
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value {
+	border: 0;
+}
+
+#history-toolbar md-select.md-default-theme:not([disabled]):focus .md-select-value,
+#history-toolbar md-select:not([disabled]):focus .md-select-value {
+	color: rgb(33,150,243);
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value > span {
+	overflow: visible;
+}
+
+#history-content {
+	overflow-x: hidden;
+}
+
+md-card.history-card {
+	margin: 4px;
+}
+
+div.col-xs-4.limit-both {
+	padding-right: 8px;
+	padding-left: 8px;
+}
+
+div.col-xs-4.limit-left {
+	padding-left: 1px;
+}
+
+div.col-xs-4.limit-right {
+	padding-right: 1px;
+}

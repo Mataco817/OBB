@@ -90,21 +90,16 @@
 		function getMyRecords() {
 			mongodbService.getAllRecords()
 			.then(function(records) {
-				var tempArray = [];
 				for (var i = 0; i < records.length; i++) {
-					if (records[i].name === "OB Test") {
-						var dateString = records[i].date;
-						var testDate = moment(dateString, 'YYYY:MM:DD:hh:mm:ss', true);
-						records[i].day = utilService.getDays()[testDate.day()];
-						records[i].month = utilService.getMonths()[testDate.month()];
-						records[i].monthDay = testDate.date();
-						records[i].year = testDate.year();
-						
-						tempArray.push(records[i]);
-					}
+					var dateObj = new Date(records[i].date);
+					var testDate = moment(dateObj);
+					records[i].day = utilService.getDays()[testDate.day()];
+					records[i].month = utilService.getMonths()[testDate.month()];
+					records[i].monthDay = testDate.date();
+					records[i].year = testDate.year();
 				}
 				
-				vm.records = tempArray;
+				vm.records = records;
 			});
 		}
 

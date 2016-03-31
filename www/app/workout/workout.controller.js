@@ -3,8 +3,8 @@
 		.module('workout')
 		.controller('WorkoutController', WorkoutController);
 	
-	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
-	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService) {
+	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService', 'mongodbService'];
+	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService, mongodbService) {
 		var vm = this;
 		
 		vm.waiting = false;
@@ -100,6 +100,8 @@
 					setInProgress = true;
 					
 					currentWorkout.sets.push({
+						time : new Date(),
+						setNumber : currentWorkout.sets.length + 1,
 						exerciseName : "Current Set",
 						avgVelocities : []
 					});
@@ -135,14 +137,15 @@
 			saveToDatabase(getCurrentSet());
 		}
 		
-		function saveToDatabase(set) {
+		function saveToDatabase(setInfo) {
 			var record = {
-					id : set.id,
-					name : "OB Test",
-					lift : set.exerciseName,
-					weight : set.weight,
-					velocities : set.avgVelocities.toString(),
-					rpe : set.rpe
+					user : "OB Test",
+					set : setInfo.setNumber,
+					time : setInfo.time,
+					lift : setInfo.exerciseName,
+					weight : setInfo.weight,
+					velocities : setInfo.avgVelocities.toString(),
+					rpe : setInfo.rpe
 			};
 			
 			mongodbService.saveRecord(record)
