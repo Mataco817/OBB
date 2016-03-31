@@ -4,15 +4,17 @@
 angular.module('openbarbell', [
 	'ngMaterial',
 	'ngMessages',
+	'ng.group',
 	'ionic',
 	'appConfig',
 	'appRoutes',
 	'shell',
+	'setup',
 	'workout',
 	'history',
 	'settings',
 	/* Services */
-	'bluetooth-service', 'rfduino-service', 'settings-service', 'database-service', 'mongodb-service'
+	'bluetooth-service', 'rfduino-service', 'settings-service', 'database-service', 'mongodb-service', 'util-service'
 ]);
 
 //.run(function($ionicPlatform) {

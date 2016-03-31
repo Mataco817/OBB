@@ -9,6 +9,7 @@
 		var locked = false;
 		
 		var settings = {
+			"initialSetupComplete" : false,
 			"units" : "Lbs",
 			"setTimeoutInMillis" : 30000,
 			"discoveryTimeout" : 3
@@ -50,9 +51,11 @@
 				db.put(defaultSettings)
 				.then(function(response) {
 					console.log("Successfully created default user settings!");
+					deferred.resolve();
 				})
 				.catch(function(error) {
 					console.log(error);
+					deferred.reject();
 				});
 			});
 			

@@ -15,6 +15,9 @@
         },
         "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.testtabs509143"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.ionicframework.testtabs509143"
         }
     },
     "dependent_plugins": {}

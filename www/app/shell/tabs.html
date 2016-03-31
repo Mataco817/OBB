@@ -1,13 +1,36 @@
-<md-tabs md-stretch-tabs="always" layout-fill class="md-primary" md-selected="tabCtrl.selectedIndex" md-swipe-content="true" md-no-pagination="true">
+
+	
+	
+
+
+<!-- 		<div class="row"> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		    <div class="col-xs-4">This is sample data -->
+<!-- 		        <br>on two rows</div> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		    <div class="clearfix"></div> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		    <div class="col-xs-4">This is -->
+<!-- 		        <br>sample data -->
+<!-- 		        <br>on three rows</div> -->
+<!-- 		    <div class="clearfix"></div> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		    <div class="col-xs-4">This is sample data on one row</div> -->
+<!-- 		</div> -->
+<md-tabs layout-fill md-stretch-tabs="always" class="md-primary" md-selected="tabCtrl.selectedIndex" md-swipe-content="true" md-no-pagination="true">
 	<md-tab layout="column" label="Workout" md-on-select="tabCtrl.checkConnection()">
-		<md-tab-content ui-view="tab-workout" flex layout-fill></md-tab-content>
+		<md-tab-content ui-view="tab-workout" flex></md-tab-content>
 	</md-tab>
 	
 	<md-tab layout="column" label="History">
-		<md-tab-content ui-view="tab-history" flex layout-fill></md-tab-content>
+		<md-tab-content ui-view="tab-history" flex></md-tab-content>
 	</md-tab>
 
 	<md-tab layout="column" label="Settings" md-on-select="tabCtrl.syncSettings()">
-		<md-tab-content ui-view="tab-settings" flex layout-fill></md-tab-content>
+		<md-tab-content ui-view="tab-settings" flex></md-tab-content>
 	</md-tab>
 </md-tabs>
+
+<div ui-view></div>

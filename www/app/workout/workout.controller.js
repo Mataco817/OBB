@@ -3,8 +3,8 @@
 		.module('workout')
 		.controller('WorkoutController', WorkoutController);
 	
-	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService'];
-	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService) {
+	WorkoutController.$inject = ['$scope', '$timeout', '$mdDialog', 'bluetoothService','rfduinoService', 'settingsService', 'mongodbService'];
+	function WorkoutController($scope, $timeout, $mdDialog, bluetoothService, rfduinoService, settingsService, mongodbService) {
 		var vm = this;
 		
 		vm.waiting = false;
@@ -100,6 +100,8 @@
 					setInProgress = true;
 					
 					currentWorkout.sets.push({
+						time : new Date(),
+						setNumber : currentWorkout.sets.length + 1,
 						exerciseName : "Current Set",
 						avgVelocities : []
 					});
@@ -132,14 +134,18 @@
 			getCurrentSet().rpe = 5;
 			getCurrentSet().exerciseName = "Set " + currentWorkout.sets.length;
 			
-			saveToDatabase();
+			saveToDatabase(getCurrentSet());
 		}
 		
-		function saveToDatabase() {
+		function saveToDatabase(setInfo) {
 			var record = {
-					name : "OB Test",
-					lift : getCurrentSet().exerciseName,
-					velocities : getCurrentSet.avgVelocities.toString()
+					user : "OB Test",
+					set : setInfo.setNumber,
+					time : setInfo.time,
+					lift : setInfo.exerciseName,
+					weight : setInfo.weight,
+					velocities : setInfo.avgVelocities.toString(),
+					rpe : setInfo.rpe
 			};
 			
 			mongodbService.saveRecord(record)
@@ -167,6 +173,8 @@
 	        .then(function() {
 	        	lastExerciseName = set.exerciseName;
 	        	lastWeight = set.weight;
+				
+				saveToDatabase(set);
 	        }, function() {
 	        	//You cancelled the dialog
 	        });

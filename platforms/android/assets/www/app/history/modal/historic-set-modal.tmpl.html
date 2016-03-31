@@ -1,0 +1,35 @@
+<md-dialog id="set-info-modal" flex>
+	<form name="setInfo" flex>
+		<md-dialog-content layout="column" layout-align="center center" flex>
+			<div class="md-dialog-content" layout="column" ng-class="historicSetCtrl.keyboardVisible ? '' : 'layout-padding'" flex>
+		
+				<div layout="column">
+					<label>Exercise Name</label>
+					<span>{{ historicSetCtrl.record.lift }}</span>
+				</div>
+				
+				<div layout="column">
+					<label>Weight</label>
+					<span>{{ historicSetCtrl.record.weight }}</span>
+				</div>
+		
+				<span class="rpe-label" ng-class="{'rpe-padding-adjust' : historicSetCtrl.keyboardVisible}">RPE</span>
+				
+				<div layout layout-align="center center">
+<!-- 					<div id="RPE" class="rpe-hue"> -->
+						<span>{{ historicSetCtrl.record.RPE }}</span>
+<!-- 					</div> -->
+				</div>
+				
+				<div flex></div>
+		
+				<md-button 
+					class="md-primary md-raised submit-set-info-btn" 
+					ng-class="{'submit-btn-margin-adjust' : historicSetCtrl.keyboardVisible}"
+					ng-click="historicSetCtrl.enterSetInfo()">
+					Done
+				</md-button>
+			</div>
+		</md-dialog-content>
+	</form>
+</md-dialog>

@@ -1,16 +1,86 @@
-<h2>Hello todo</h2>
+<div style="height:calc(100vh - 48px); overflow: hidden;">
+	<md-toolbar md-scroll-shrink id="history-toolbar" class="md-menu-toolbar">
+		<div class="md-toolbar-tools">        
+			<md-input-container>
+				<md-select placeholder="Sort" ng-model="historyCtrl.sortingMethod">
+					<md-option value="-">Descending</md-option>
+					<md-option value="">Ascending</md-option>
+				</md-select>
+			</md-input-container>
+	        
+	        <span flex></span>
+	
+			<md-button aria-label="Add Record" class="md-icon-button">
+				<md-icon style="fill: rgb(33,150,243);" md-svg-icon="img/icons/add.svg"></md-icon>
+			</md-button>
+			
+			<md-menu md-position-mode="target-right target">
+				<md-button aria-label="Open Options Menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+					<md-icon style="fill: rgb(33,150,243);" md-menu-origin md-svg-icon="img/icons/more_vert.svg"></md-icon>
+				</md-button>
+				
+				<md-menu-content width="4" style="background: white;">
+					<md-menu-item ng-repeat-start="opt in historyCtrl.options" ng-if="$index !== historyCtrl.selectedOptionIndex">
+						<md-button ng-click="historyCtrl.optionClick($index)">
+							<div layout="row">
+								<md-icon md-menu-align-target md-svg-icon="{{opt.icon}}"></md-icon>
+								<p flex>{{opt.title}}</p>
+							</div>
+						</md-button>
+					</md-menu-item>
+					
+					<md-menu-divider ng-if="$first" ng-repeat-end></md-menu-divider>
+				</md-menu-content>
+			</md-menu>
+		</div>
+	</md-toolbar>
+	
+	<md-content ng-style="historyCtrl.contentCSS" flex id="history-content">
+		<div ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear'">
+			<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth'">
+				<div ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay'">
+					<h2>{{monthRecord.month}}, {{monthDayRecord.monthDay}}</h2>
+					<div class="row">
+						<div ng-repeat="record in monthDayRecord.items | orderBy:historyCtrl.sortingMethod + 'date'">
+							<div class="clearfix" ng-if="$index % 3 == 0"></div>
+							<div class="col-xs-4" ng-class="{'limit-both' : $index % 3 == 1, 'limit-right' : $index % 3 == 0, 'limit-left' : $index % 3 == 2}">
+								<md-card class="history-card" ng-click="historyCtrl.showSetInfo(record)">
+									<md-card-title>
+										<md-card-title-text>
+											<span class="setting-headline">{{record.lift}}</span>
+											<span class="md-subhead">{{record.weight}}</span>
+											<span class="md-subhead">{{record.RPE}}</span>
+										</md-card-title-text>
+									</md-card-title>
+			
+<!-- 									<md-card-content> -->
+<!-- 										<p ng-repeat="velocity in record.velocities track by $index"> -->
+<!-- 											<span>{{velocity}}</span> -->
+<!-- 										</p> -->
+<!-- 									</md-card-content> -->
+								</md-card>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		
-<md-button style="width: 100%;"
-	class="md-raised md-primary" 
-	ng-click="historyCtrl.addRecord()">
-	Add Record
-</md-button>
-
-<div ng-repeat="record in historyCtrl.records">
-	<h3>{{record.doc.title}}</h3>
-		
-	<md-button style="width: 100%;"
-		ng-click="historyCtrl.deleteRecord(record.doc)">
-		Delete Record
-	</md-button>
+		<!--  
+		<md-card ng-repeat="record in historyCtrl.records">
+			<md-card-title>
+				<md-card-title-text>
+					<span class="setting-headline">{{record.lift}}</span>
+					<span class="md-subhead">{{record.date}}</span>
+				</md-card-title-text>
+			</md-card-title>
+			
+			<md-card-content>
+				<p ng-repeat="velocity in record.velocities track by $index">
+					<span>{{velocity}}</span>
+				</p>
+			</md-card-content>
+		</md-card>
+		-->
+	</md-content>
 </div>

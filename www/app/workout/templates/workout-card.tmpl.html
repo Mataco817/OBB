@@ -19,7 +19,7 @@
 	</md-button>
 	
 	<div class="reps" ng-class="{'past-set' : !$first}" layout="column">
-		<h3 ng-repeat="velocity in set.avgVelocities">
+		<h3 ng-repeat="velocity in set.avgVelocities track by $index">
 			{{velocity}}
 		</h3>
 	</div>

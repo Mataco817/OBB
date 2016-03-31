@@ -3,71 +3,108 @@
 		.module('history')
 		.controller('HistoryController', HistoryController);
 	
-	HistoryController.$inject = ['$scope', 'databaseService', 'mongodbService'];
-	function HistoryController($scope, databaseService, mongodbService) {
+	HistoryController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'databaseService', 'mongodbService', 'utilService'];
+	function HistoryController($scope, $timeout, $document, $mdDialog, databaseService, mongodbService, utilService) {
 		var vm = this;
+		
 		vm.records = [];
-		
-		vm.addRecord = function() {
-			var record = {
-					lift : "Squat",
-					weight : 315,
-					velocities : [0.50, 0.50, 0.50],
-					rpe : 8
-			};
-			
-			mongodbService.saveRecord(record)
-			.then(function() {
-				console.log("YAY");
-			});
-		};
+		vm.sortingMethod = "-";
 
-//		vm.addRecord = function() {
-//			var record = {
-//				_id : new Date().toISOString(),
-//				title : "test" + index.toString()
-//			};
-//			
-//			databaseService.saveRecord(record)
-//			.then(function() {
-//				index++;
-//			});
-//		};
+		vm.selectedOptionIndex = 3;
+		vm.optionClick = optionClick;
+		vm.options = [{
+			title : 'Select...',
+			icon : 'img/icons/check_circle.svg'
+		},{
+			title : 'Comfy View',
+			icon : 'img/icons/comfy_view.svg'
+		},{
+			title : 'Day View',
+			icon : 'img/icons/day_view.svg'
+		},{
+			title : 'Month View',
+			icon : 'img/icons/month_view.svg'
+		},{
+			title : 'Year View',
+			icon : 'img/icons/year_view.svg'
+		}];
 		
-		vm.deleteRecord = function(record) {
-			databaseService.deleteRecord(record);
+		vm.contentCSS = {
+			"height" : "calc(100vh - 96px)"
 		};
+		
+		vm.showSetInfo = showSetModal;
+		vm.getOrderingMethod = getOrderMethod;
+		
+		var content = angular.element(document.getElementById('history-content'));
+		
+		$scope.$watch(function watchContent(scope) {
+			return content[0].style["transform"];
+		},
+		function(newVal, oldVal) {				
+			var transformString = newVal;
+			var transformStringArray = transformString.split(" ");
+			var transformY = parseInt(transformStringArray[1]);
+			var heightOffset = 96 - (24 - transformY);
+			
+			vm.contentCSS["height"] = "calc(100vh - " + heightOffset.toString() + "px)";
+		});
 		
 		/*
 		 * Internal Methods
 		 */
-		var index = 1;
-		
-		databaseService.subscribe($scope, onDataChange);
-		databaseService.initializeDatabase();
-		
-		function onDataChange(event, params) {
-			if (params.changes.initialize) {
-				vm.records = params.records;
-			}
-			else {
-				var id = params.changes.id;
-				var recordIndex = vm.records.map(function (x) { return x.id }).indexOf(id);
-				
-				if (params.changes.deleted) {
-					vm.records.splice(recordIndex, 1);
-				}
-				else {
-					var dbRecordIndex = params.records.map(function(x) { return x.id; }).indexOf(id);
-					
-					if (recordIndex > -1 && dbRecordIndex > -1) {
-						vm.records[recordIndex] = params.records[dbRecordIndex];
-					}
-					else if (dbRecordIndex > -1) {
-						vm.records.push(params.records[dbRecordIndex]);
-					}
-				}
-			}
+		function optionClick(index) {
+			$timeout(function() {
+				vm.selectedOptionIndex = index;
+			}, 500);
 		}
+		
+		function getOrderMethod() {
+			return [vm.sortingMethod + 'year', vm.sortingMethod + 'month', vm.sortingMethod + 'monthDay'];
+		}
+		
+		function showSetModal(record, $event) {
+			$mdDialog.show({
+				parent: angular.element(document.body),
+	        	templateUrl: 'app/history/modal/historic-set-modal.tmpl.html',
+	        	targetEvent: $event,
+	        	clickOutsideToClose: true,
+	        	autoWrap: false,
+	        	controller: 'HistoricSetController',
+	        	controllerAs: 'historicSetCtrl',
+	        	locals: {
+	        		record : record
+	        	},
+	        	bindToController: true
+	        })
+	        .then(function() {
+	        	lastExerciseName = set.exerciseName;
+	        	lastWeight = set.weight;
+				
+				saveToDatabase(set);
+	        }, function() {
+	        	//You cancelled the dialog
+	        });
+		}
+		
+		function getMyRecords() {
+			mongodbService.getAllRecords()
+			.then(function(records) {
+				for (var i = 0; i < records.length; i++) {
+					if (records[i].name === "OB Test") {
+						var dateString = records[i].date;
+						var testDate = moment(dateString, 'YYYY:MM:DD:hh:mm:ss', true);
+						records[i].day = utilService.getDays()[testDate.day()];
+						records[i].month = utilService.getMonths()[testDate.month()];
+						records[i].monthDay = testDate.date();
+						records[i].year = testDate.year();
+					}
+				}
+				
+				vm.records = records;
+			});
+		}
+
+		getMyRecords();
 	};
 })(angular);
