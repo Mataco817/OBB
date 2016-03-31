@@ -91,12 +91,12 @@
 			mongodbService.getAllRecords()
 			.then(function(records) {
 				for (var i = 0; i < records.length; i++) {
-					var dateObj = new Date(records[i].date);
-					var testDate = moment(dateObj);
-					records[i].day = utilService.getDays()[testDate.day()];
-					records[i].month = utilService.getMonths()[testDate.month()];
-					records[i].monthDay = testDate.date();
-					records[i].year = testDate.year();
+					var timeObj = new Date(records[i].time);
+					var m = moment(timeObj);
+					records[i].day = utilService.getDays()[m.day()];
+					records[i].month = utilService.getMonths()[m.month()];
+					records[i].monthDay = m.date();
+					records[i].year = m.year();
 				}
 				
 				vm.records = records;
