@@ -1,5 +1,5 @@
-<div style="height:calc(100vh - 48px); overflow: hidden;">
-	<md-toolbar md-scroll-shrink id="history-toolbar" class="md-menu-toolbar">
+<!-- <div style="height:calc(100vh - 48px); overflow: hidden;"> -->
+	<md-toolbar id="history-toolbar" class="md-menu-toolbar" style="position: fixed;">
 		<div class="md-toolbar-tools">        
 			<md-input-container>
 				<md-select placeholder="Sort" ng-model="historyCtrl.sortingMethod">
@@ -35,36 +35,14 @@
 		</div>
 	</md-toolbar>
 	
-	<md-content ng-style="historyCtrl.contentCSS" flex id="history-content">
-		<div ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear'">
-			<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth'">
-				<div ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay'">
-					<h2>{{monthRecord.month}}, {{monthDayRecord.monthDay}}</h2>
-					<div class="row">
-						<div ng-repeat="record in monthDayRecord.items | orderBy:historyCtrl.sortingMethod + 'date'">
-							<div class="clearfix" ng-if="$index % 3 == 0"></div>
-							<div class="col-xs-4" ng-class="{'limit-both' : $index % 3 == 1, 'limit-right' : $index % 3 == 0, 'limit-left' : $index % 3 == 2}">
-								<md-card class="history-card" ng-click="historyCtrl.showSetInfo(record)">
-									<md-card-title>
-										<md-card-title-text>
-											<span class="setting-headline">{{record.lift}}</span>
-											<span class="md-subhead">{{record.weight}}</span>
-											<span class="md-subhead">{{record.RPE}}</span>
-										</md-card-title-text>
-									</md-card-title>
-			
-<!-- 									<md-card-content> -->
-<!-- 										<p ng-repeat="velocity in record.velocities track by $index"> -->
-<!-- 											<span>{{velocity}}</span> -->
-<!-- 										</p> -->
-<!-- 									</md-card-content> -->
-								</md-card>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+	<md-content ng-style="historyCtrl.contentCSS">
+	
+		<div
+			flex id="history-content" 
+			ng-include="'app/history/templates/historic-content.tmpl.html'">
 		</div>
+	
+<!-- 	<md-content flex id="history-content" ng-include="'app/history/templates/history-content.tmpl.html'"> -->
 		
 		<!--  
 		<md-card ng-repeat="record in historyCtrl.records">
@@ -83,4 +61,4 @@
 		</md-card>
 		-->
 	</md-content>
-</div>
+<!-- </div> -->

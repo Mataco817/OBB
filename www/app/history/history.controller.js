@@ -6,11 +6,21 @@
 	HistoryController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'databaseService', 'mongodbService', 'utilService'];
 	function HistoryController($scope, $timeout, $document, $mdDialog, databaseService, mongodbService, utilService) {
 		var vm = this;
+		var MONTH_VIEW = 'Month View';
+		var DAY_VIEW = 'Day View';
+		
+		vm.contentCSS = {
+			    "position": "absolute",
+			    "top": "56px",
+			    "bottom": "0px",
+			    "left": "0px",
+			    "right": "0px"
+		};
 		
 		vm.records = [];
 		vm.sortingMethod = "-";
 
-		vm.selectedOptionIndex = 3;
+		vm.selectedOptionIndex = 2;
 		vm.optionClick = optionClick;
 		vm.options = [{
 			title : 'Select...',
@@ -29,15 +39,54 @@
 			icon : 'img/icons/year_view.svg'
 		}];
 		
+		vm.showSetInfo = showSetModal;
+		vm.getOrderingMethod = getOrderMethod;
+		
+		vm.isDayView = function() { return isView(DAY_VIEW); };
+		vm.isMonthView = function() { return isView(MONTH_VIEW); };
+		
+		var offset = 0;
+		vm.applyClearFix = function(test) {
+			if (isView(MONTH_VIEW)) {
+				if (test.$parent.$first) {
+					offset = test.$parent.monthDayRecord.items.length;
+					return test.$index % 3 === 0;
+				}
+				else {
+					var clearRow = (test.$index + offset) % 3 === 0;
+					
+					if (test.$last) {
+						offset += test.$parent.monthDayRecord.items.length;
+					}
+					
+					return clearRow;
+				}
+			}
+			else if (isView(DAY_VIEW)) {
+				return test.$index % 3 === 0;
+			}
+		};
+		
+		vm.isNewRow = function(monthDayRecord) {
+			if (isView(MONTH_VIEW)) {
+				return ((offset % 3 === 0) && (monthDayRecord.items.length % 3 === 0));
+			}
+			else {
+				return true;
+			}
+		};
+		
+		/*
+		 * This will set the height of the content area relative to the amount
+		 * of the shrinking toolbar is shown/hidden
+		 * DISABLED for now, shrinking may not be needed
+		 */
+		/*		
 		vm.contentCSS = {
 			"height" : "calc(100vh - 96px)"
 		};
 		
-		vm.showSetInfo = showSetModal;
-		vm.getOrderingMethod = getOrderMethod;
-		
 		var content = angular.element(document.getElementById('history-content'));
-		
 		$scope.$watch(function watchContent(scope) {
 			return content[0].style["transform"];
 		},
@@ -49,10 +98,12 @@
 			
 			vm.contentCSS["height"] = "calc(100vh - " + heightOffset.toString() + "px)";
 		});
+		 */
 		
 		/*
 		 * Internal Methods
 		 */
+		
 		function optionClick(index) {
 			$timeout(function() {
 				vm.selectedOptionIndex = index;
@@ -61,6 +112,11 @@
 		
 		function getOrderMethod() {
 			return [vm.sortingMethod + 'year', vm.sortingMethod + 'month', vm.sortingMethod + 'monthDay'];
+		}
+		
+		function isView(viewTitle) {
+			var test = vm.options[vm.selectedOptionIndex].title === viewTitle;
+			return vm.options[vm.selectedOptionIndex].title === viewTitle;
 		}
 		
 		function showSetModal(record, $event) {
@@ -90,16 +146,29 @@
 		function getMyRecords() {
 			mongodbService.getAllRecords()
 			.then(function(records) {
+				var tempArray = [];
 				for (var i = 0; i < records.length; i++) {
-					var timeObj = new Date(records[i].time);
-					var m = moment(timeObj);
-					records[i].day = utilService.getDays()[m.day()];
-					records[i].month = utilService.getMonths()[m.month()];
-					records[i].monthDay = m.date();
-					records[i].year = m.year();
+					if (records[i].name === "OB Test") {
+						var dateStr = records[i].date;
+						var m = moment(dateStr, "YYYY:MM:DD:HH:mm:ss", true);
+						records[i].day = utilService.getDays()[m.day()];
+						records[i].month = utilService.getMonths()[m.month()];
+						records[i].monthDay = m.date();
+						records[i].year = m.year();
+						
+						tempArray.push(records[i]);
+					}
+
+//					var timeObj = new Date(records[i].time);
+//					var m = moment(timeObj);
+//					records[i].day = utilService.getDays()[m.day()];
+//					records[i].month = utilService.getMonths()[m.month()];
+//					records[i].monthDay = m.date();
+//					records[i].year = m.year();
 				}
 				
-				vm.records = records;
+//				vm.records = records;
+				vm.records = tempArray;
 			});
 		}
 

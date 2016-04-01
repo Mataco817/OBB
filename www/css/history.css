@@ -47,3 +47,13 @@ div.col-xs-4.limit-left {
 div.col-xs-4.limit-right {
 	padding-right: 1px;
 }
+
+.testing {
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.testing:before {
+	display: table;
+	content: " ";
+}
