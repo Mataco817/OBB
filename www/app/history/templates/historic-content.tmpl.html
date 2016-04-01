@@ -1,15 +1,15 @@
-<div ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear' track by $index">
-	<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth' track by $index">
+<div style="height: 100%;" ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear' track by yearRecord.year">
+	<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth' track by monthRecord.month">
 	<h2 ng-if="historyCtrl.isMonthView()">{{monthRecord.month}} {{yearRecord.year}}</h2>
-		<div ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay' track by $index">
+		<div class="container" ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay' track by monthDayRecord.monthDay">
 			<h2 ng-if="historyCtrl.isDayView()">{{monthRecord.month}}, {{monthDayRecord.monthDay}}</h2>
-			<div ng-class="historyCtrl.isNewRow(monthDayRecord) ? 'row' : 'testing'">
-				<div ng-repeat="record in monthDayRecord.items | orderBy:historyCtrl.sortingMethod + 'date' track by $index">
-					<div class="clearfix" ng-if="historyCtrl.applyClearFix(this)"></div>
+<!-- 			<div ng-class="historyCtrl.isNewRow(monthDayRecord) ? 'row' : 'testing'"> -->
+				<md-card class="history-card" ng-repeat="record in monthDayRecord.items | orderBy:historyCtrl.sortingMethod + 'date' track by record._id" jd-script>
+<!-- 					<div class="clearfix" ng-if="historyCtrl.applyClearFix(this)"></div> -->
 					
 <!-- 					<div class="col-xs-4" ng-class="{'limit-both' : $index % 3 == 1, 'limit-right' : $index % 3 == 0, 'limit-left' : $index % 3 == 2}"> -->
-					<div class="col-xs-4">
-						<md-card class="history-card" ng-click="historyCtrl.showSetInfo(record)">
+<!-- 					<div class="col-xs-4"> -->
+<!-- 						<md-card class="history-card" ng-click="historyCtrl.showSetInfo(record)"> -->
 							<md-card-title>
 								<md-card-title-text>
 									<span class="setting-headline">{{record.lift}}</span>
@@ -17,9 +17,9 @@
 									<span class="md-subhead">{{record.RPE}}</span>
 								</md-card-title-text>
 							</md-card-title>
-						</md-card>
-					</div>
-				</div>
+<!-- 						</md-card> -->
+<!-- 					</div> -->
+				</md-card>
 			</div>
 		</div>
 	</div>

@@ -29,10 +29,23 @@
 
 #history-content {
 	overflow-x: hidden;
+	height: 100%;
 }
 
 md-card.history-card {
 	margin: 4px;
+	
+	
+	/* TESTING */
+	left: 0;
+	padding: 15px;
+	
+	
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    -webkit-transition: top 1s ease-out, opacity 1s;
+    -moz-transition: top 1s ease-out, opacity 1s;
 }
 
 div.col-xs-4.limit-both {
@@ -56,4 +69,16 @@ div.col-xs-4.limit-right {
 .testing:before {
 	display: table;
 	content: " ";
+}
+
+
+
+.container {
+	position: relative;
+	height: 100%;
+}
+
+.moving {
+	opacity: 0.25;
+	z-index: 10;
 }

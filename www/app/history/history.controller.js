@@ -1,10 +1,33 @@
 (function(angular) {
 	angular
 		.module('history')
-		.controller('HistoryController', HistoryController);
+		.value('config', {
+			'OFFSET_Y' : 63
+		})
+		.controller('HistoryController', HistoryController)
+		.controller('jdController', [
+			'$element',
+			'$rootScope',
+			'config',
+		
+			function($el, $rootScope, $config){
+				$el.css({
+					'top': $rootScope.currItemIndex * 116
+				});
+				$rootScope.currItemIndex++;
+			}
+		])
+		.directive('jdScript', [
+			function(){
+				return {
+					restrict: 'EA',
+					controller: 'jdController'
+				};
+			}
+		]);
 	
-	HistoryController.$inject = ['$scope', '$timeout', '$document', '$mdDialog', 'databaseService', 'mongodbService', 'utilService'];
-	function HistoryController($scope, $timeout, $document, $mdDialog, databaseService, mongodbService, utilService) {
+	HistoryController.$inject = ['$scope', '$rootScope', '$window', '$timeout', '$document', '$mdDialog', 'databaseService', 'mongodbService', 'utilService'];
+	function HistoryController($scope, $rootScope, $window, $timeout, $document, $mdDialog, databaseService, mongodbService, utilService) {
 		var vm = this;
 		var MONTH_VIEW = 'Month View';
 		var DAY_VIEW = 'Day View';
@@ -20,7 +43,7 @@
 		vm.records = [];
 		vm.sortingMethod = "-";
 
-		vm.selectedOptionIndex = 2;
+		vm.selectedOptionIndex = 3;
 		vm.optionClick = optionClick;
 		vm.options = [{
 			title : 'Select...',
@@ -100,6 +123,25 @@
 		});
 		 */
 		
+		vm.timer = 0;
+		$rootScope.currItemIndex = 0;
+		
+		$scope.$watch(function watchSorting(scope) {
+			return vm.sortingMethod;
+		},
+		function(newVal, oldVal) {
+			$window.clearTimeout(vm.timer);
+			vm.timer = $window.setTimeout(rearrange, 100);
+		});
+		
+		$scope.$watch(function watchGrouping(scope) {
+			return vm.selectedOptionIndex;
+		},
+		function(newVal, oldVal) {
+			$window.clearTimeout(vm.timer);
+			vm.timer = $window.setTimeout(rearrange, 100);
+		});
+		
 		/*
 		 * Internal Methods
 		 */
@@ -107,7 +149,33 @@
 		function optionClick(index) {
 			$timeout(function() {
 				vm.selectedOptionIndex = index;
+//				rearrange();
 			}, 500);
+		}
+		
+		function rearrange() {
+			$('.history-card').each(function(idx, el){
+				var $el = $(el);				
+				var newTop = parseInt(idx / 3) * 116;
+				var newLeft = (idx % 3) * 116;
+				
+//				if (newTop !== parseInt($el.css('top'))) {
+					$el.css({
+						'top': newTop
+					});
+//					.one('webkitTransitionEnd', function (evt){
+//						$(evt.target).removeClass('moving');
+//					})
+//					.addClass('moving');	
+//				}
+				
+//				if (newLeft !== parseInt($el.css('left'))) {
+					$el.css({
+						'left': newLeft
+					});
+//				}
+				
+			});
 		}
 		
 		function getOrderMethod() {
@@ -156,6 +224,8 @@
 						records[i].monthDay = m.date();
 						records[i].year = m.year();
 						
+						records[i].myId = i;
+						
 						tempArray.push(records[i]);
 					}
 
@@ -169,6 +239,8 @@
 				
 //				vm.records = records;
 				vm.records = tempArray;
+				
+				rearrange();
 			});
 		}
 
