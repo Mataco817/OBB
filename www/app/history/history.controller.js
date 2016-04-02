@@ -50,10 +50,10 @@
 			if (isView(MONTH_VIEW)) {
 				if (test.$parent.$first) {
 					offset = test.$parent.monthDayRecord.items.length;
-					return test.$index % 3 === 0;
+					return test.$index % 6 === 0;
 				}
 				else {
-					var clearRow = (test.$index + offset) % 3 === 0;
+					var clearRow = (test.$index + offset) % 6 === 0;
 					
 					if (test.$last) {
 						offset += test.$parent.monthDayRecord.items.length;
@@ -63,13 +63,13 @@
 				}
 			}
 			else if (isView(DAY_VIEW)) {
-				return test.$index % 3 === 0;
+				return test.$index % 4 === 0;
 			}
 		};
 		
 		vm.isNewRow = function(monthDayRecord) {
 			if (isView(MONTH_VIEW)) {
-				return ((offset % 3 === 0) && (monthDayRecord.items.length % 3 === 0));
+				return ((offset % 6 === 0) && (monthDayRecord.items.length % 6 === 0));
 			}
 			else {
 				return true;

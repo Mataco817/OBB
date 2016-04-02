@@ -35,25 +35,60 @@ md-card.history-card {
 	margin: 4px;
 }
 
-div.col-xs-4.limit-both {
-	padding-right: 8px;
-	padding-left: 8px;
+md-card.history-card span.info-bullet {
+/* 	position: absolute; */
+/* 	left: 28px; */
 }
 
-div.col-xs-4.limit-left {
+md-card.history-card.by-month {
+    width: 60px;
+    height: 60px;
+}
+
+md-card.history-card.by-day {
+/*     width: 100px; */
+    height: 100px;
+}
+
+md-card.history-card.by-day span.historic-headline {
+	font-size: smaller;
+	display: block;
+    font-weight: 500;
+    line-height: 1em;
+    margin: 0;
+    
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: inherit;
+    overflow: hidden;
+    width: 90%;
+}
+
+md-card.history-card.by-day span.md-subhead.historic {
+	padding-top: 0px;
+/* 	padding-left: 12px; */
+	font-size: 11px;
+}
+
+div.col-xs-3.limit-both {
+	padding-right: 4px;
+	padding-left: 4px;
+}
+
+div.col-xs-3.limit-left {
 	padding-left: 1px;
 }
 
-div.col-xs-4.limit-right {
+div.col-xs-3.limit-right {
 	padding-right: 1px;
 }
 
-.testing {
+.row-before-only {
 	margin-right: -15px;
 	margin-left: -15px;
 }
 
-.testing:before {
+.row-before-only:before {
 	display: table;
 	content: " ";
 }
