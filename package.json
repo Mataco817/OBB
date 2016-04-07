@@ -24,7 +24,5 @@
     "ionic-plugin-keyboard",
     "cordova-plugin-bluetooth-serial"
   ],
-  "cordovaPlatforms": [
-    "android"
-  ]
+  "cordovaPlatforms": []
 }
