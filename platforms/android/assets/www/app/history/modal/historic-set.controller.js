@@ -18,7 +18,9 @@
 		 * Internal Methods
 		 */
 		function removeRep($index) {
-			vm.record.velocities.splice($index, 1);
+			vm.record.rep.splice($index, 1);
+			//TODO reorder N indexes
+			
 		}
 		
 		function closeModal() {

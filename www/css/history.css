@@ -28,11 +28,20 @@
 }
 
 #history-content {
+	position: absolute;
+/*     top: 56px; */
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+#history-content > div {
 	overflow-x: hidden;
 }
 
 md-card.history-card {
 	margin: 4px;
+	display: inline-block;
 }
 
 md-card.history-card span.info-bullet {
@@ -190,9 +199,3 @@ div.col-xs-3.limit-right {
 /*     right: 4px; */
 /*     border-radius: 28px; */
 /* } */
-
-
-
-md-card.history-card {
-	position: absolute;	
-}

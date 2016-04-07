@@ -4,7 +4,7 @@
 angular.module('openbarbell', [
 	'ngMaterial',
 	'ngMessages',
-	'ng.group',
+//	'ng.group',
 	'ionic',
 	'appConfig',
 	'appRoutes',
