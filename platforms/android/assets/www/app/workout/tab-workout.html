@@ -1,5 +1,5 @@
 <md-content id="workout-tab" layout="column" ng-class="workoutCtrl.waiting || !workoutCtrl.ready ? 'layout-align-center-center' : 'layout-align-start-center'" layout-fill>
-	<md-icon id="openBB-icon"
+	<md-icon id="openBB-icon" ng-if="!workoutCtrl.waiting || !workoutCtrl.ready || workoutCtrl.getSets().length === 0"
 		md-svg-src="img/icons/OpenBarbell_Icon.svg" aria-label="OpenBarbell">
 	</md-icon>
 	

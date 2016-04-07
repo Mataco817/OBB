@@ -2,8 +2,8 @@
 	angular.module('rfduino-service', [])
 	.service('rfduinoService', rfduinoService);
 
-	rfduinoService.$inject = ['$q', '$timeout', '$window', '$rootScope', 'settingsService'];
-	function rfduinoService($q, $timeout, $window, $rootScope, settingsService) {
+	rfduinoService.$inject = ['$q', '$timeout', '$window', '$rootScope', 'bluetoothService', 'settingsService'];
+	function rfduinoService($q, $timeout, $window, $rootScope, bluetoothService, settingsService) {
 		var connectedDevice = {};
 		var workoutCallback = false;
 		var reading = false;
@@ -119,17 +119,13 @@
 		function isEnabled() {
 			var deferred = $q.defer();
 
-			if ($window.rfduino) {
-				rfduino.isEnabled(function() {
-					deferred.resolve("Bluetooth is enabled.");
-				},
-				function() {
-					deferred.reject("Bluetooth is not enabled.");
-				});
-			}
-			else {
-				deferred.reject("RFduino plug-in not loaded.");
-			}
+			bluetoothService.isEnabled()
+			.then(function() {
+				deferred.resolve("Bluetooth is enabled.");
+			},
+			function() {
+				deferred.reject("Bluetooth is not enabled.");
+			});
 
 			return deferred.promise;
 		}

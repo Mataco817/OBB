@@ -42,7 +42,7 @@
 		 * Initial check if bluetooth enabled
 		 */
 		function checkBluetoothEnabled() {			
-			rfduinoService.isEnabled()
+			bluetoothService.isEnabled()
 			.then(function(response) {
 				vm.waiting = currentWorkout.sets.length === 0;
 			},
@@ -62,6 +62,13 @@
 			});
 		}
 		
+		function checkTodayForWorkout() {
+			mongodbService.getTodaysRecords()
+			.then(function(records) {
+				console.log(records);
+			});
+		}
+		
 		function getUnits() {
 			return settingsService.getSetting("units");
 		}
@@ -71,9 +78,9 @@
 		}
 		
 		function getSets() {
-			if (!waitingForSet()) {
+//			if (!waitingForSet()) {
 				return currentWorkout.sets;
-			}
+//			}
 		}
 		
 		function getCurrentSet() {
@@ -185,5 +192,6 @@
 		/* Check bluetooth enabled once loaded */
 		checkBluetoothEnabled();
 		checkDeviceConnected();
+		checkTodayForWorkout();
 	};
 })(angular);

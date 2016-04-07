@@ -137,3 +137,7 @@ md-select-menu > md-content {
 	bottom: 7px;
 	opacity: 1;
 }
+
+body {
+	font-family: -apple-system, 'Helvetica Neue', Roboto, 'Segoe UI', sans-serif;
+}

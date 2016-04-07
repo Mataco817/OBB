@@ -1,0 +1,43 @@
+<!-- <div ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear' track by $index"> -->
+<!-- 	<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth' track by $index"> -->
+<!-- 		<h2 ng-if="historyCtrl.isMonthView()">{{monthRecord.month}}&nbsp;{{yearRecord.year}}</h2> -->
+		
+<!-- 		<div ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay' track by $index"> -->
+<!-- 			<h2 ng-if="historyCtrl.isDayView()">{{monthRecord.month}},&nbsp;{{monthDayRecord.monthDay}}</h2> -->
+<!-- 			<div ng-class="historyCtrl.isNewRow(monthDayRecord) ? 'row' : 'row-before-only'"> -->
+				<div ng-repeat="record in historyCtrl.records | orderBy:historyCtrl.sortingMethod + 'date' track by $index">
+					<div class="clearfix" ng-if="historyCtrl.applyClearFix(this)"></div>
+					
+					<div ng-class="{
+						'col-xs-3' : historyCtrl.isDayView(), 
+						'col-xs-2' : historyCtrl.isMonthView(),
+						'limit-left' : $index % 4 == 3,
+						'limit-both' : $index % 4 == 1 || $index % 4 == 2,
+						'limit-right' : $index % 4 == 0
+					}">
+						<md-card class="history-card" 
+							ng-class="{'by-month' : historyCtrl.isMonthView(), 'by-day' : historyCtrl.isDayView()}" 
+							ng-click="historyCtrl.showSetInfo(record)">
+							<md-card-title>
+								<md-card-title-text>
+									<span class="historic-headline">
+										{{record.lift === '' ? 'N/A' : record.lift}}
+									</span>
+									<span class="md-subhead historic">
+										&#8226;&nbsp;&nbsp;Weight:&nbsp;{{record.weight === 'undefined' ? 'N/A' : record.weight}}
+									</span>
+									<span class="md-subhead historic">
+										&#8226;&nbsp;&nbsp;Reps:&nbsp;{{record.rep.length}}
+									</span>
+									<span class="md-subhead historic">
+										&#8226;&nbsp;&nbsp;RPE:&nbsp;{{record.RPE === 'undefined' ? 'N/A' : record.RPE}}
+									</span>
+								</md-card-title-text>
+							</md-card-title>
+						</md-card>
+					</div>
+				</div>
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- </div> -->

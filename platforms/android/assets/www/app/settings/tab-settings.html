@@ -1,5 +1,5 @@
-<form name="settingsForm">
-	<md-content layout="column" layout-padding layout-fill ng-cloak>
+<md-content layout="column" layout-fill ng-cloak>
+	<form name="settingsForm" layout-padding >
 		<md-card ng-if="!settingsCtrl.deviceConnected">
 			<md-card-title>
 				<md-card-title-text>
@@ -114,5 +114,5 @@
 			<md-backdrop class="md-opaque"></md-backdrop>
 			<md-progress-circular class="md-accent" md-mode="{{settingsCtrl.pairing}}" md-diameter="96"></md-progress-circular>
 		</div>
-	</md-content>
-</form>
+	</form>
+</md-content>

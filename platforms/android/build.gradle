@@ -23,7 +23,15 @@ apply plugin: 'android'
 
 buildscript {
     repositories {
-        mavenCentral()
+        
+        maven {
+            url 'http://orllssdb02.acct03.us.lmco.com/artifactory/IRADS-TrainingManagement.repo'
+            credentials {
+                username = "irad-trainingmanagement"
+                password = "tmsmaven"
+            }
+        }
+        mavenLocal()
     }
 
     // Switch the Android Gradle plugin version requirement depending on the
@@ -37,7 +45,14 @@ buildscript {
 
 // Allow plugins to declare Maven dependencies via build-extras.gradle.
 repositories {
-    mavenCentral()
+    maven {
+        url 'http://orllssdb02.acct03.us.lmco.com/artifactory/IRADS-TrainingManagement.repo'
+        credentials {
+            username = "irad-trainingmanagement"
+            password = "tmsmaven"
+        }
+    }
+    mavenLocal()
 }
 
 task wrapper(type: Wrapper) {

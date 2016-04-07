@@ -3,19 +3,38 @@
 	.service('bluetoothService', bluetoothService);
 	
 	/*******************************
-	 * DEPRECATED				   *
 	 * Could possible be used for: *
-	 *--------ANDROID ONLY---------*
 	 * function @isEnabled         *
 	 * function @enable            *
 	 *******************************/
 
-	bluetoothService.$inject = ['$q', '$window'];
-	function bluetoothService($q, $window) {
+	bluetoothService.$inject = ['$q', '$timeout', '$window'];
+	function bluetoothService($q, $timeout, $window) {
+		// TODO: FOR TESTING WITHOUT DEVICE
+//		var mock_bluetooth = {
+//			enabled : false,
+//			isEnabled : function(success, failure) {
+//				$timeout(function() {
+//					if ($window.bluetoothSerial.enabled) { success(); }
+//					else { failure(); }
+//				}, 1000);
+//			},
+//			enable : function(success, failure) {
+//				$timeout(function() {
+//					$window.bluetoothSerial.enabled = true;
+//					success();
+//				}, 1000);
+//			}
+//		};
+//		$window.bluetoothSerial = mock_bluetooth;
 
 		var service = {
-			isEnabled : isEnabled,
-			enable : enable
+			isEnabled : function() {
+				return isEnabled();
+			},
+			enable : function() {
+				return enable();
+			}
 		};
 
 		return service;

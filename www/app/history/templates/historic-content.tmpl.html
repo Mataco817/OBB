@@ -1,21 +1,35 @@
-<div ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear' track by $index">
-	<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth' track by $index">
-		<h2 ng-if="historyCtrl.isMonthView()">{{monthRecord.month}}&nbsp;{{yearRecord.year}}</h2>
+<!-- <div ng-repeat="yearRecord in historyCtrl.records | orderBy:historyCtrl.getOrderingMethod() | groupBy:'year':'recordsByYear' track by $index"> -->
+<!-- 	<div ng-repeat="monthRecord in yearRecord.items | groupBy:'month':'recordsByMonth' track by $index"> -->
+<!-- 		<h2 ng-if="historyCtrl.isMonthView()">{{monthRecord.month}}&nbsp;{{yearRecord.year}}</h2> -->
 		
-		<div ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay' track by $index">
-			<h2 ng-if="historyCtrl.isDayView()">{{monthRecord.month}},&nbsp;{{monthDayRecord.monthDay}}</h2>
-			<div ng-class="historyCtrl.isNewRow(monthDayRecord) ? 'row' : 'row-before-only'">
-				<div ng-repeat="record in monthDayRecord.items | orderBy:historyCtrl.sortingMethod + 'date' track by $index">
-					<div class="clearfix" ng-if="historyCtrl.applyClearFix(this)"></div>
+<!-- 		<div ng-repeat="monthDayRecord in monthRecord.items | groupBy:'monthDay':'recordsByMonthDay' track by $index"> -->
+<!-- 			<h2 ng-if="historyCtrl.isDayView()">{{monthRecord.month}},&nbsp;{{monthDayRecord.monthDay}}</h2> -->
+<!-- 			<div ng-class="historyCtrl.isNewRow(monthDayRecord) ? 'row' : 'row-before-only'"> -->
+<!-- 				<div ng-repeat="record in year | orderBy:historyCtrl.sortingMethod + 'date' track by $index"> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- </div> -->
+<div ng-repeat="yearObj in historyCtrl.records | orderBy:historyCtrl.sortingMethod + 'year'">
+<!-- 	<h2>{{ yearObj.year }}</h2> -->
+	
+	<div ng-repeat="monthObj in yearObj.months | orderBy:historyCtrl.sortingMethod + 'monthNumber'">
+		<div ng-repeat="dayObj in monthObj.days | orderBy:historyCtrl.sortingMethod + 'dayNumber'">
+			<h2 style="position: absolute;" class="{{dayObj.records.length}} month-header" id="header-{{yearObj.year}}-{{monthObj.monthNumber}}-{{dayObj.dayNumber}}">{{ monthObj.month }},&nbsp;{{ dayObj.dayNumber }}</h2>
+			
+<!-- 			<div ng-class="historyCtrl.isNewRow(dayObj) ? 'row' : 'row-before-only'"> -->
+<!-- 				<div ng-repeat="record in dayObj.records | orderBy:historyCtrl.sortingMethod + 'dateObj'"> -->
+<!-- 					<div class="clearfix" ng-if="historyCtrl.applyClearFix(this)"></div> -->
 					
-					<div ng-class="{
-						'col-xs-3' : historyCtrl.isDayView(), 
-						'col-xs-2' : historyCtrl.isMonthView(),
-						'limit-left' : $index % 4 == 3,
-						'limit-both' : $index % 4 == 1 || $index % 4 == 2,
-						'limit-right' : $index % 4 == 0
-					}">
-						<md-card class="history-card" 
+<!-- 					<div ng-class="{ -->
+<!-- 						'col-xs-3' : historyCtrl.isDayView(),  -->
+<!-- 						'col-xs-2' : historyCtrl.isMonthView(), -->
+<!-- 						'limit-left' : $index % 4 == 3, -->
+<!-- 						'limit-both' : $index % 4 == 1 || $index % 4 == 2, -->
+<!-- 						'limit-right' : $index % 4 == 0 -->
+<!-- 					}"> -->
+						<md-card id="{{yearObj.year}}-{{monthObj.monthNumber}}-{{dayObj.dayNumber}}-{{$index}}" class="history-card" ng-repeat="record in dayObj.records | orderBy:historyCtrl.sortingMethod + 'dateObj'"
 							ng-class="{'by-month' : historyCtrl.isMonthView(), 'by-day' : historyCtrl.isDayView()}" 
 							ng-click="historyCtrl.showSetInfo(record)">
 							<md-card-title>
@@ -27,7 +41,7 @@
 										&#8226;&nbsp;&nbsp;Weight:&nbsp;{{record.weight === 'undefined' ? 'N/A' : record.weight}}
 									</span>
 									<span class="md-subhead historic">
-										&#8226;&nbsp;&nbsp;Reps:&nbsp;{{record.velocities.length}}
+										&#8226;&nbsp;&nbsp;Reps:&nbsp;{{record.rep.length}}
 									</span>
 									<span class="md-subhead historic">
 										&#8226;&nbsp;&nbsp;RPE:&nbsp;{{record.RPE === 'undefined' ? 'N/A' : record.RPE}}
@@ -35,9 +49,9 @@
 								</md-card-title-text>
 							</md-card-title>
 						</md-card>
-					</div>
-				</div>
-			</div>
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 		</div>
 	</div>
 </div>
