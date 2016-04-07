@@ -28,11 +28,20 @@
 }
 
 #history-content {
+	position: absolute;
+/*     top: 56px; */
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+#history-content > div {
 	overflow-x: hidden;
 }
 
 md-card.history-card {
 	margin: 4px;
+	display: inline-block;
 }
 
 md-card.history-card span.info-bullet {
@@ -46,7 +55,7 @@ md-card.history-card.by-month {
 }
 
 md-card.history-card.by-day {
-/*     width: 100px; */
+    width: 100px;
     height: 100px;
 }
 

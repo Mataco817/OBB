@@ -110,26 +110,32 @@
 	        	bindToController: true
 	        })
 	        .then(function(updatedRecord) {
-				updateDatabase(updatedRecord);
+				updateDatabase(record, updatedRecord);
 	        }, function() {
 	        	//You cancelled the dialog
 	        });
 		}
 		
-		function updateDatabase(setInfo) {
+		function updateDatabase(original, updated) {
+			var velocities = [];
+			for (var i = 0; i < updated.rep.length; i++) {
+				velocities.push(updated.rep[i].velocity);
+			}
+			
 			var record = {
 					user : "OB Test",
-					set : setInfo.setNumber,
-					time : setInfo.time,
-					lift : setInfo.lift,
-					weight : setInfo.weight,
-					velocities : setInfo.velocities.toString(),
-					rpe : setInfo.RPE
+					set : updated.setNumber,
+					time : updated.time,
+					lift : updated.lift,
+					weight : updated.weight,
+					velocities : velocities.toString(),
+					rpe : updated.RPE
 			};
 			
 			mongodbService.saveRecord(record)
 			.then(function(data) {
 				console.log(data);
+				original = updated;
 			});
 		}
 		
