@@ -83,15 +83,15 @@ md-card.history-card.by-month {
 }
 
 md-card.history-card.by-day {
-    width: 100px;
-    height: 100px;
+/*     width: 100px; */
+    height: 85px;
 }
 
 md-card.history-card.by-day span.historic-headline {
 	font-size: smaller;
 	display: block;
-    font-weight: 500;
-    line-height: 1em;
+    font-weight: 700;
+   /* line-height: 1em;*/
     margin: 0;
     
     text-overflow: ellipsis;
