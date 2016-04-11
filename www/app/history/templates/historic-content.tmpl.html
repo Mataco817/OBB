@@ -3,7 +3,7 @@
 		<div ng-repeat="dayObj in monthObj.days | orderBy:historyCtrl.sortingMethod + 'dayNumber'">
 			<h2>{{ monthObj.month }},&nbsp;{{ dayObj.dayNumber }}</h2>
 			
-			<md-card data-my-record class="history-card" 
+			<md-card class="history-card"  ng-style="cardWidthAdjust"
 				ng-repeat="record in dayObj.records | orderBy:historyCtrl.sortingMethod + 'dateObj'"
 				ng-class="{'by-month' : historyCtrl.isMonthView(), 'by-day' : historyCtrl.isDayView()}" 
 				ng-click="historyCtrl.showSetInfo(record)
