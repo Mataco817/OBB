@@ -1,64 +1,43 @@
-<!-- <div style="height:calc(100vh - 48px); overflow: hidden;"> -->
-	<md-toolbar id="history-toolbar" class="md-menu-toolbar" style="position: fixed;">
-		<div class="md-toolbar-tools">        
-			<md-input-container>
-				<md-select placeholder="Sort" ng-model="historyCtrl.sortingMethod">
-					<md-option value="-">Descending</md-option>
-					<md-option value="">Ascending</md-option>
-				</md-select>
-			</md-input-container>
-	        
-	        <span flex></span>
-	
-			<md-button aria-label="Add Record" class="md-icon-button">
-				<md-icon style="fill: rgb(33,150,243);" md-svg-icon="img/icons/add.svg"></md-icon>
+<md-toolbar id="history-toolbar" ng-if="!historyCtrl.selectingItems" class="md-menu-toolbar" style="position: fixed;">
+	<div class="md-toolbar-tools">        
+		<md-input-container>
+			<md-select placeholder="Sort" ng-model="historyCtrl.sortingMethod">
+				<md-option value="-">Descending</md-option>
+				<md-option value="">Ascending</md-option>
+			</md-select>
+		</md-input-container>
+        
+        <span flex></span>
+
+		<md-button aria-label="Add Record" class="md-icon-button">
+			<md-icon style="fill: rgb(33,150,243);" md-svg-icon="img/icons/add.svg"></md-icon>
+		</md-button>
+		
+		<md-menu md-position-mode="target-right target">
+			<md-button aria-label="Open Options Menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+				<md-icon style="fill: rgb(33,150,243);" md-menu-origin md-svg-icon="img/icons/more_vert.svg"></md-icon>
 			</md-button>
 			
-			<md-menu md-position-mode="target-right target">
-				<md-button aria-label="Open Options Menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-					<md-icon style="fill: rgb(33,150,243);" md-menu-origin md-svg-icon="img/icons/more_vert.svg"></md-icon>
-				</md-button>
+			<md-menu-content width="4" style="background: white;">
+				<md-menu-item ng-repeat-start="opt in historyCtrl.options" ng-if="$index !== historyCtrl.selectedOptionIndex">
+					<md-button ng-click="historyCtrl.optionClick($index)" ng-disabled="{{opt.disabled}}">
+						<div layout="row">
+							<md-icon md-menu-align-target md-svg-icon="{{opt.icon}}"></md-icon>
+							<p flex>{{opt.title}}</p>
+						</div>
+					</md-button>
+				</md-menu-item>
 				
-				<md-menu-content width="4" style="background: white;">
-					<md-menu-item ng-repeat-start="opt in historyCtrl.options" ng-if="$index !== historyCtrl.selectedOptionIndex">
-						<md-button ng-click="historyCtrl.optionClick($index)">
-							<div layout="row">
-								<md-icon md-menu-align-target md-svg-icon="{{opt.icon}}"></md-icon>
-								<p flex>{{opt.title}}</p>
-							</div>
-						</md-button>
-					</md-menu-item>
-					
-					<md-menu-divider ng-if="$first" ng-repeat-end></md-menu-divider>
-				</md-menu-content>
-			</md-menu>
-		</div>
-	</md-toolbar>
-	
-	<md-content id="history-content" data-my-content>
-	
-		<div 
-			flex
-			ng-include="'app/history/templates/historic-content.tmpl.html'">
-		</div>
-	
-<!-- 	<md-content flex id="history-content" ng-include="'app/history/templates/history-content.tmpl.html'"> -->
-		
-		<!--  
-		<md-card ng-repeat="record in historyCtrl.records">
-			<md-card-title>
-				<md-card-title-text>
-					<span class="setting-headline">{{record.lift}}</span>
-					<span class="md-subhead">{{record.date}}</span>
-				</md-card-title-text>
-			</md-card-title>
-			
-			<md-card-content>
-				<p ng-repeat="velocity in record.velocities track by $index">
-					<span>{{velocity}}</span>
-				</p>
-			</md-card-content>
-		</md-card>
-		-->
-	</md-content>
-<!-- </div> -->
+				<md-menu-divider ng-if="$first" ng-repeat-end></md-menu-divider>
+			</md-menu-content>
+		</md-menu>
+	</div>
+</md-toolbar>
+
+<div ng-include="'app/history/templates/select-toolbar.tmpl.html'"></div>
+
+<md-content id="history-content" data-my-content>
+	<div flex
+		ng-include="'app/history/templates/historic-content.tmpl.html'">
+	</div>
+</md-content>

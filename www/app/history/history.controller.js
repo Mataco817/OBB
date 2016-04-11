@@ -19,16 +19,19 @@
 			icon : 'img/icons/check_circle.svg'
 		},{
 			title : 'Comfy View',
-			icon : 'img/icons/comfy_view.svg'
+			icon : 'img/icons/comfy_view.svg',
+			disabled : true
 		},{
 			title : 'Day View',
 			icon : 'img/icons/day_view.svg'
 		},{
 			title : 'Month View',
-			icon : 'img/icons/month_view.svg'
+			icon : 'img/icons/month_view.svg',
+			disabled : true
 		},{
 			title : 'Year View',
-			icon : 'img/icons/year_view.svg'
+			icon : 'img/icons/year_view.svg',
+			disabled : true
 		}];
 		
 		vm.showSetInfo = showSetModal;
@@ -64,26 +67,32 @@
 		/*
 		 * Internal Methods
 		 */		
-		$scope.$watch(function watchSorting(scope) {
-			return vm.sortingMethod;
-		},
-		function(newVal, oldVal) {
+//		$scope.$watch(function watchSorting(scope) {
+//			return vm.sortingMethod;
+//		},
+//		function(newVal, oldVal) {
 //			$window.clearTimeout(vm.timer);
 //			vm.timer = $window.setTimeout(rearrange, 100);
-		});
-		
-		$scope.$watch(function watchGrouping(scope) {
-			return vm.selectedOptionIndex;
-		},
-		function(newVal, oldVal) {
+//		});
+//		
+//		$scope.$watch(function watchGrouping(scope) {
+//			return vm.selectedOptionIndex;
+//		},
+//		function(newVal, oldVal) {
 //			$window.clearTimeout(vm.timer);
 //			vm.timer = $window.setTimeout(rearrange, 100);
-		});
+//		});
 		
 		function optionClick(index) {
-			$timeout(function() {
-				vm.selectedOptionIndex = index;
-			}, 500);
+			if (index === 0) {
+//				$('#select-toolbar').fadeIn();
+				vm.selectingItems = true;
+			}
+			else {
+				$timeout(function() {
+					vm.selectedOptionIndex = index;
+				}, 500);
+			}
 		}
 		
 		function getOrderMethod() {
