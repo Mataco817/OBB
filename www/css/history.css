@@ -4,23 +4,38 @@
 	color: rgb(255, 255, 255); 
 }
 
-.history-card > .selectbox {
-	position: relative;
-    float: right;
-    top: -100px;
-    right: -10px;
+div > md-checkbox.selectbox {
+	position: absolute;
+    top: 4px;
+    right: 4px;
+    margin: 0;
+    max-width: 20px;
 }
 
+div > md-checkbox.selectboxFD {
+	position: absolute;
+    top: 4px;
+    right: 4px;
+    margin: 0;
+    max-width: 20px;
+}
+
+md-checkbox.selectbox.ng-enter,
+md-checkbox.selectbox.ng-leave,
 #select-toolbar.ng-enter, 
 #select-toolbar.ng-leave {
   transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 }
 
+md-checkbox.selectbox.ng-enter,
+md-checkbox.selectbox.ng-leave.ng-leave-active,
 #select-toolbar.ng-enter,
 #select-toolbar.ng-leave.ng-leave-active {
   opacity:0;
 }
 
+md-checkbox.selectbox.ng-leave,
+md-checkbox.selectbox.ng-enter.ng-enter-active,
 #select-toolbar.ng-leave,
 #select-toolbar.ng-enter.ng-enter-active {
   opacity:1;
@@ -64,7 +79,7 @@
 }
 
 #history-content > div {
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 md-card.history-card {

@@ -40,6 +40,31 @@
 		vm.isDayView = function() { return isView(DAY_VIEW); };
 		vm.isMonthView = function() { return isView(MONTH_VIEW); };
 		
+		vm.selectedRecords = {};
+		vm.recordSelectChange = function(record, index) {
+			if (record.selected) {
+				vm.selectedRecords[index] = record;
+			}
+			else {
+				delete vm.selectedRecords[index];
+			}
+		};
+		
+		vm.getNumSelected = function() {
+			return Object.keys(vm.selectedRecords).length;
+		};
+		
+		vm.clearSelection = function() {
+			vm.selectingItems = false;
+			
+			var keys = Object.keys(vm.selectedRecords);
+			for (var i = 0; i < keys.length; i++) {
+				vm.selectedRecords[keys[i]].selected = false;
+			}
+			
+			vm.selectedRecords = {};
+		}
+		
 		/*
 		 * This will set the height of the content area relative to the amount
 		 * of the shrinking toolbar is shown/hidden
@@ -67,6 +92,14 @@
 		/*
 		 * Internal Methods
 		 */		
+//		$scope.$watch(function watchSelecting() {
+//			return vm.selectingItems;
+//		},
+//		function(newValue, oldValue) {
+//			if (newValue === false) {
+//				var keys = Object.keys(vm.selectedRecords)
+//			}
+//		});
 //		$scope.$watch(function watchSorting(scope) {
 //			return vm.sortingMethod;
 //		},
@@ -85,7 +118,6 @@
 		
 		function optionClick(index) {
 			if (index === 0) {
-//				$('#select-toolbar').fadeIn();
 				vm.selectingItems = true;
 			}
 			else {

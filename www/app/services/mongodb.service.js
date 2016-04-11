@@ -4,7 +4,7 @@
 
 	mongodbService.$inject = ['$http', '$q', '$timeout'];
 	function mongodbService($http, $q, $timeout) {
-		var testingEndpoint = "http://localhost:1337/lifts.squatsandscience.com/";
+		var testingEndpoint = "http://localhost:1337/198.199.67.144:3000/";
 		var ipEndpoint = "http://198.199.67.144:3000/";
 		var ssEndpoint = "http://lifts.squatsandscience.com/"
 		/* 

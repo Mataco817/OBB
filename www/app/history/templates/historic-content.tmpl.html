@@ -1,32 +1,47 @@
 <div ng-repeat="yearObj in historyCtrl.records | orderBy:historyCtrl.sortingMethod + 'year'">
 	<div ng-repeat="monthObj in yearObj.months | orderBy:historyCtrl.sortingMethod + 'monthNumber'">
 		<div ng-repeat="dayObj in monthObj.days | orderBy:historyCtrl.sortingMethod + 'dayNumber'">
+<!-- 			<md-checkbox -->
+<!-- 				ng-if="historyCtrl.selectingItems"  -->
+<!-- 				ng-model="record.selected"  -->
+<!-- 				ng-change="historyCtrl.recordSelectChange(record, $index)" -->
+<!-- 				class="selectboxFD"  -->
+<!-- 				aria-label="Select Record"> -->
+<!-- 			</md-checkbox> -->
+				
 			<h2>{{ monthObj.month }},&nbsp;{{ dayObj.dayNumber }}</h2>
 			
-			<md-card class="history-card"  ng-style="cardWidthAdjust"
-				ng-repeat="record in dayObj.records | orderBy:historyCtrl.sortingMethod + 'dateObj'"
-				ng-class="{'by-month' : historyCtrl.isMonthView(), 'by-day' : historyCtrl.isDayView()}" 
-				ng-click="historyCtrl.showSetInfo(record)
-			">
-				<md-card-title>
-					<md-card-title-text>
-						<span class="historic-headline">
-							{{record.lift === '' ? 'N/A' : record.lift}}
-						</span>
-						<span class="md-subhead historic">
-							&#8226;&nbsp;&nbsp;Weight:&nbsp;{{record.weight === 'undefined' ? 'N/A' : record.weight}}
-						</span>
-						<span class="md-subhead historic">
-							&#8226;&nbsp;&nbsp;Reps:&nbsp;{{record.rep.length}}
-						</span>
-						<span class="md-subhead historic">
-							&#8226;&nbsp;&nbsp;RPE:&nbsp;{{record.RPE === 'undefined' ? 'N/A' : record.RPE}}
-						</span>
-					</md-card-title-text>
-				</md-card-title>
+			<div ng-repeat="record in dayObj.records | orderBy:historyCtrl.sortingMethod + 'dateObj'" flex="none" style="position: relative; display: inline-block;">
+				<md-card class="history-card"  ng-style="cardWidthAdjust"
+					ng-class="{'by-month' : historyCtrl.isMonthView(), 'by-day' : historyCtrl.isDayView()}" 
+					ng-click="historyCtrl.showSetInfo(record)
+				">
+					<md-card-title>
+						<md-card-title-text>
+							<span class="historic-headline">
+								{{record.lift === '' ? 'N/A' : record.lift}}
+							</span>
+							<span class="md-subhead historic">
+								&#8226;&nbsp;&nbsp;Weight:&nbsp;{{record.weight === 'undefined' ? 'N/A' : record.weight}}
+							</span>
+							<span class="md-subhead historic">
+								&#8226;&nbsp;&nbsp;Reps:&nbsp;{{record.rep.length}}
+							</span>
+							<span class="md-subhead historic">
+								&#8226;&nbsp;&nbsp;RPE:&nbsp;{{record.RPE === 'undefined' ? 'N/A' : record.RPE}}
+							</span>
+						</md-card-title-text>
+					</md-card-title>
+				</md-card>
 				
-				<md-checkbox class="selectbox" ng-model="data.cb1" aria-label="Checkbox 1"></md-checkbox>
-			</md-card>
+				<md-checkbox
+					ng-if="historyCtrl.selectingItems" 
+					ng-model="record.selected" 
+					ng-change="historyCtrl.recordSelectChange(record, $index)"
+					class="selectbox" 
+					aria-label="Select Record">
+				</md-checkbox>
+			</div>
 		</div>
 	</div>
 </div>
