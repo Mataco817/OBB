@@ -35,6 +35,7 @@
 		})
 		.state('tab.setup', {
 			url: '/setup',
+//			templateUrl: 'app/setup/setup.html',
 			controller: 'SetupController',
 			controllerAs: 'vm'
 		});

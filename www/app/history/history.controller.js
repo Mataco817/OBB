@@ -63,7 +63,11 @@
 			}
 			
 			vm.selectedRecords = {};
-		}
+		};
+		
+		vm.confirmDelete = function() {
+			
+		};
 		
 		/*
 		 * This will set the height of the content area relative to the amount

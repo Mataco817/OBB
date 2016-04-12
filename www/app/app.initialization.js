@@ -3,6 +3,7 @@
 	
 	runBlock.$inject = ['settingsService', 'databaseService', '$state', '$rootScope'];
 	function runBlock(settingsService, databaseService, $state, $rootScope) {
+		
 		settingsService.initializeSettings()
 		.then(function() {
 //			if(settingsService.getSetting("initialSetupComplete")) {
@@ -12,7 +13,6 @@
 //				$state.go('tab.setup');
 //			}
 		});
-		
 
 //		$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
 //			if (toState.name === "tab" && !settingsService.getSetting("initialSetupComplete")) {
@@ -30,5 +30,9 @@
 //				}
 //			}
 //		});
+		
+		window.addEventListener('load', function() {
+		    new FastClick(document.body);
+		}, false);
 	};
 })(angular);

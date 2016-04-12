@@ -26,6 +26,9 @@
 			},
 			getRecordByName : function(name) {
 				return getByName();
+			},
+			getUserByName : function(name) {
+				return getUserByName(name);
 			}
 		};
 
@@ -121,6 +124,16 @@
 				deferred.reject("Failed to get records.");
 			});
 			
+			return deferred.promise;
+		}
+		
+		function getUserByName(name) {
+			var deferred = $q.defer();
+			
+			//TODO: hookup with username query from server
+			console.log(name);
+			deferred.resolve(false);
+
 			return deferred.promise;
 		}
 		

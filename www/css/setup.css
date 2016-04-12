@@ -1,0 +1,8 @@
+md-dialog.setup-modal {
+	height: 50%;
+	width: 80%;
+}
+
+md-dialog.setup-modal > form > md-dialog-content {
+	height: 100%;
+}
