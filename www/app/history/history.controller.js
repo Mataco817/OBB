@@ -65,9 +65,38 @@
 			vm.selectedRecords = {};
 		};
 		
-		vm.confirmDelete = function() {
-			
+		vm.confirmDelete = function(ev) {
+
+		    // Appending dialog to document.body to cover sidenav in docs app
+		    var confirm = $mdDialog.confirm()
+		          .title('Would you like to delete your debt?')
+		          .textContent('All of the banks have agreed to forgive you your debts.')
+		          .ariaLabel('Lucky day')
+		          .targetEvent(ev)
+		          .ok('Please do it!')
+		          .cancel('Sounds like a scam');
+		    $mdDialog.show(confirm).then(function() {
+//		      $scope.status = 'You decided to get rid of your debt.';
+				var keys = Object.keys(vm.selectedRecords);
+		    	deleteRecords(vm.selectedRecords, keys, 0);
+//		    	for (var i = 0; i < vm.selectedRecords.length; i++) {
+//		    		
+//		    	}
+		    }, function() {
+//		      $scope.status = 'You decided to keep your debt.';
+		    });
 		};
+		
+		function deleteRecords(records, keys, index) {
+			if (index < keys.length) {
+				mongodbService.deleteRecord(records[keys[index]])
+				.then(function() {
+				
+					index++;
+					deleteRecords(records, keys, index);
+				});
+			}
+		}
 		
 		/*
 		 * This will set the height of the content area relative to the amount
@@ -155,7 +184,27 @@
 	        	bindToController: true
 	        })
 	        .then(function(updatedRecord) {
-				updateDatabase(record, updatedRecord);
+				updateDatabase(record, updatedRecord)
+				.then(function() {
+					record = updatedRecord;
+					for (var i = 0; i < vm.records.length; i++) {
+						if (updatedRecord.year === vm.records[i].year) {
+							for (var x = 0; x < vm.records[i].months.length; x++) {
+								if (vm.records[i].months[x].monthNumber === updatedRecord.monthNumber) {
+									for (var y = 0; y < vm.records[i].months[x].days.length; y++) {
+										if (vm.records[i].months[x].days[y].dayNumber === updatedRecord.monthDay) {
+											for (var w = 0; w < vm.records[i].months[x].days[y].records.length; w++) {
+												if (vm.records[i].months[x].days[y].records[w].time === updatedRecord.time) {
+													vm.records[i].months[x].days[y].records[w] = updatedRecord;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				});
 	        }, function() {
 	        	//You cancelled the dialog
 	        });
@@ -169,19 +218,19 @@
 			
 			var record = {
 					user : "OB Test",
-					set : updated.setNumber,
+					set : updated.set,
 					time : updated.time,
 					lift : updated.lift,
 					weight : updated.weight,
-					velocities : velocities.toString(),
+					velocities : velocities,
 					rpe : updated.RPE
 			};
 			
-			mongodbService.saveRecord(record)
-			.then(function(data) {
-				console.log(data);
-				original = updated;
-			});
+			return mongodbService.saveRecord(record);
+//			.then(function(data) {
+//				console.log(data);
+//				original = updated;
+//			});
 		}
 		
 		function getMyRecords() {

@@ -10,7 +10,7 @@
 		
 		<span flex></span>
 		
-		<md-button ng-if="historyCtrl.getNumSelected() > 0" aria-label="Delete" class="md-icon-button" ng-click="historyCtrl.confirmDelete()">
+		<md-button ng-if="historyCtrl.getNumSelected() > 0" aria-label="Delete" class="md-icon-button" ng-click="historyCtrl.confirmDelete($event)">
 			<md-icon style="fill: rgb(255, 255, 255);" md-svg-icon="img/icons/delete.svg"></md-icon>
 		</md-button>
 	</div>
