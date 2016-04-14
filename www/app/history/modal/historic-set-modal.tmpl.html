@@ -3,12 +3,6 @@
 		<md-toolbar>
 			<div class="md-toolbar-tools">
 				<h2>{{historicSetCtrl.dateHeader}}</h2>
-				
-<!-- 				<span flex></span> -->
-				
-<!-- 				<md-button class="md-icon-button" ng-click="historicSetCtrl.close()"> -->
-<!-- 					<md-icon md-svg-src="img/icons/close.svg" aria-label="Close"></md-icon> -->
-<!-- 				</md-button> -->
 			</div>
 		</md-toolbar>
 	
@@ -40,9 +34,19 @@
 								<input aria-label="Velocity" type="number" ng-model="rep.velocity" />
 							</md-input-container>
 							
-							<md-button class="md-icon-button" md-no-ink aria-label="Remove" ng-click="historicSetCtrl.removeRep($index)">
+							<md-button class="md-icon-button" md-no-ink aria-label="Remove" ng-click="historicSetCtrl.removeRep($index, $event)">
 								<md-icon md-svg-icon="img/icons/circle_remove.svg"></md-icon>
 							</md-button>
+						</div>
+		
+						<div class="rep-history">
+							<md-input-container class="velocity-new" md-no-float>
+								<md-button id="special" class="md-icon-button" md-no-ink aria-label="Remove" ng-click="historicSetCtrl.addRep()">
+									<md-icon md-svg-icon="img/icons/add.svg"></md-icon>
+								</md-button>
+								
+								<input aria-label="Velocity" step="0.01" type="number" ng-model="historicSetCtrl.newVelocity" placeholder="Add Rep"/>
+							</md-input-container>
 						</div>
 					</div>
 				</div>
