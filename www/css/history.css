@@ -68,10 +68,12 @@ md-checkbox.selectbox.ng-enter.ng-enter-active,
     bottom: 0px;
     left: 0px;
     right: 0px;
+    overflow: hidden;
 }
 
 #history-content > div {
-	overflow: hidden;
+/* 	overflow: hidden; */
+	font-size: 0;
 }
 
 div.history-card-container > md-checkbox.selectbox {
@@ -85,6 +87,7 @@ div.history-card-container > md-checkbox.selectbox {
 div.history-card-container {
 	position: relative; 
 	display: inline-block;
+	font-size: small;
 }
 
 md-card.history-card {
