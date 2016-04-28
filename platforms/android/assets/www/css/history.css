@@ -1,0 +1,257 @@
+#select-toolbar {
+/* 	display: none; */
+	background-color: rgb(33,150,243);
+	color: rgb(255, 255, 255); 
+}
+
+div > md-checkbox.selectboxFD {
+	position: absolute;
+    top: 4px;
+    right: 4px;
+    margin: 0;
+    max-width: 20px;
+}
+
+md-checkbox.selectbox.ng-enter,
+md-checkbox.selectbox.ng-leave,
+#select-toolbar.ng-enter, 
+#select-toolbar.ng-leave {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+md-checkbox.selectbox.ng-enter,
+md-checkbox.selectbox.ng-leave.ng-leave-active,
+#select-toolbar.ng-enter,
+#select-toolbar.ng-leave.ng-leave-active {
+  opacity:0;
+}
+
+md-checkbox.selectbox.ng-leave,
+md-checkbox.selectbox.ng-enter.ng-enter-active,
+#select-toolbar.ng-leave,
+#select-toolbar.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+#history-toolbar {
+    color: rgb(33,150,243);
+}
+
+#history-toolbar:not(.md-whiteframe-z1) {
+	box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+#history-toolbar > div.md-toolbar-tools {
+    background-color: white;
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container {
+	margin: 0;
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value {
+	border: 0;
+}
+
+#history-toolbar md-select.md-default-theme:not([disabled]):focus .md-select-value,
+#history-toolbar md-select:not([disabled]):focus .md-select-value {
+	color: rgb(33,150,243);
+}
+
+#history-toolbar > div.md-toolbar-tools md-input-container > md-select > md-select-value > span {
+	overflow: visible;
+}
+
+#history-content {
+	position: absolute;
+/*     top: 56px; */
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    overflow: hidden;
+}
+
+#history-content > div {
+/* 	overflow: hidden; */
+	font-size: 0;
+}
+
+div.history-card-container > md-checkbox.selectbox {
+	position: absolute;
+    top: 4px;
+    right: 4px;
+    margin: 0;
+    max-width: 20px;
+}
+
+div.history-card-container {
+	position: relative; 
+	display: inline-block;
+	font-size: small;
+}
+
+md-card.history-card {
+	margin: 4px;
+	display: inline-block;
+}
+
+md-card.history-card span.info-bullet {
+/* 	position: absolute; */
+/* 	left: 28px; */
+}
+
+md-card.history-card.by-month {
+    width: 60px;
+    height: 60px;
+}
+
+md-card.history-card.by-day {
+/*     width: 100px; */
+    height: 85px;
+}
+
+md-card.history-card.by-day span.historic-headline {
+	font-size: smaller;
+	display: block;
+    font-weight: 700;
+   /* line-height: 1em;*/
+    margin: 0;
+    
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: inherit;
+    overflow: hidden;
+    width: 90%;
+}
+
+md-card.history-card.by-day span.md-subhead.historic {
+	padding-top: 0px;
+/* 	padding-left: 12px; */
+	font-size: 11px;
+}
+
+/* div.col-xs-3.limit-both { */
+/* 	padding-right: 4px; */
+/* 	padding-left: 4px; */
+/* } */
+
+/* div.col-xs-3.limit-left { */
+/* 	padding-left: 1px; */
+/* } */
+
+/* div.col-xs-3.limit-right { */
+/* 	padding-right: 1px; */
+/* } */
+
+/* .row-before-only { */
+/* 	margin-right: -15px; */
+/* 	margin-left: -15px; */
+/* } */
+
+/* .row-before-only:before { */
+/* 	display: table; */
+/* 	content: " "; */
+/* } */
+
+#historic-info-modal div.md-dialog-content {
+	width: 100%;
+}
+
+#historic-info-modal md-input-container,
+#historic-info-modal md-input-container > label {
+	padding: initial;
+	font-weight: initial;
+}
+
+#historic-info-modal div.rep-history {
+	position: relative;
+}
+
+#historic-info-modal md-input-container.velocity-list {
+	margin: 0;
+	width: 70%;
+}
+
+#historic-info-modal md-input-container.velocity-new {
+	margin: 0;
+}
+
+#historic-info-modal md-input-container.velocity-new > input,
+#historic-info-modal md-input-container.velocity-list > input {
+	border: 0;
+	text-align: end;
+/* 	padding-right: 20px; */
+}
+
+#historic-info-modal md-input-container.velocity-new > div.md-errors-spacer,
+#historic-info-modal md-input-container.velocity-list > div.md-errors-spacer {
+	display: none;
+}
+
+#historic-info-modal md-input-container.velocity-list > button.md-icon-button {
+/*     position: absolute; */
+/*     right: -20px; */
+/*     padding: 0; */
+/*     height: 30px; */
+/*     width: 20px; */
+/*     min-height: 30px; */
+}
+
+#historic-info-modal button#special.md-icon-button {
+    position: absolute;
+/*     right: 20px; */
+    padding: 0;
+    height: 30px;
+    width: 20px;
+    min-height: 30px;
+}
+
+#historic-info-modal md-input-container.velocity-new.md-input-focused > button#special.md-icon-button {
+/*     color: green; */
+}
+
+#historic-info-modal button#special.md-icon-button > md-icon {
+	height: 16px;
+	width: 16px;
+	display: block;
+}
+
+#historic-info-modal div.rep-history > button.md-icon-button:not(#special) {
+    position: absolute;
+    right: -20px;
+    padding: 0;
+    height: 30px;
+    width: 20px;
+    min-height: 30px;
+}
+
+#historic-info-modal md-input-container.velocity-list > button.md-icon-button > md-icon {
+	height: 16px;
+	width: 16px;
+	display: block;
+}
+
+#historic-info-modal div.rep-history > button.md-icon-button > md-icon {
+	height: 16px;
+	width: 16px;
+	display: block;
+}
+
+/* #historic-info-modal md-input-container.velocity-list > button.md-icon-button:hover { */
+/* 	color: red; */
+/* } */
+
+/* #historic-info-modal md-input-container:not(.md-input-focused).velocity-list > button.md-icon-button { */
+/* 	display: none; */
+/* } */
+
+/* #historic-info-modal md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused md-icon,  */
+/* #historic-info-modal md-input-container:not(.md-input-invalid).md-input-focused md-icon { */
+/* 	color: red; */
+/* } */
+
+#historic-info-modal input[type=number]::-webkit-inner-spin-button, 
+#historic-info-modal input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
