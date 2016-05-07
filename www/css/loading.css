@@ -1,0 +1,26 @@
+.loading-dialog > h1,
+.loading-dialog > md-progress-circular,
+.loading-dialog > span.md-caption {
+	position: absolute;
+}
+
+.loading-dialog > h1,
+.loading-dialog > span.md-caption {
+	width: 100%;
+	text-align: center;	
+}
+
+.loading-dialog > h1 {
+    top: 0;
+    margin-top: 15%;
+}
+
+.loading-dialog > md-progress-circular {
+    top: calc(50% - 150px);
+    left: calc(50% - 151px);
+    margin-top: 6px;
+}
+
+.loading-dialog > span.md-caption {
+    bottom: 15%;
+}

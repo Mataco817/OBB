@@ -66,39 +66,24 @@
 			});
 			
 			bgService.init();
-
-		    // Android customization
-		    // To indicate that the app is executing tasks in background and being paused would disrupt the user.
-		    // The plug-in has to create a notification while in background - like a download progress bar.
-//		    cordova.plugins.backgroundMode.setDefaults({ 
-//		        title:  'OpenBarbell',
-//		        text:   'Device is listening.'
-//		    });
-
-		    // Called when background mode has been activated
-//		    cordova.plugins.backgroundMode.onactivate = backgroundThread;
 		}, false);
-
-//		function backgroundThread() {
-//			if (cordova.plugins.backgroundMode.isEnabled()) {
-//				setTimeout(function() {
-////		        	console.log("background mode");
-//		        	backgroundThread();
-//				}, 10000);
-//			}
-//		}
 		
 		// Handle the pause event
 		function onPause() {
-		    // Enable background mode
-		    cordova.plugins.backgroundMode.enable();
+		    // Enable background mode if device is connected.
+			rfduinoService.isConnected()
+			.then(function() {
+				cordova.plugins.backgroundMode.enable();
+			});
 		}
 
 		// Handle the resume event
 		function onResume() {
 			$rootScope.$broadcast('checkConnectionStatus', {});
-		    // Enable background mode
-		    cordova.plugins.backgroundMode.disable();
+		    // Disable background mode
+		    if (cordova.plugins.backgroundMode.isEnabled()) {
+		    	cordova.plugins.backgroundMode.disable();
+		    }
 		}
 	};
 })(angular);
