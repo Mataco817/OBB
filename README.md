@@ -2,9 +2,9 @@
 OpenBarbell V1.0 Front End testing
 
 Requires:
--Node.js
--Ionic Framework
--Android SDK
+- Node.js
+- Ionic Framework
+- Android SDK
 
 Follow the Getting Started guide at http://ionicframework.com/getting-started/
 
